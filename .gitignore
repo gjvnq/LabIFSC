@@ -14,3 +14,5 @@
 .glide/
 .tox/
 __pycache__/
+
+*.pyc
