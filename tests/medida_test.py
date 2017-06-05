@@ -95,9 +95,7 @@ def test_medida_mul_1():
 
 def test_medida_div_1():
     m1 = Medida("3", "kg/m")
-    print(m1.dimensao)
     m2 = Medida("2", "L*Pa/m")
-    print(m2.unidades_originais)
     m3 = m1/m2
     m4 = m2/m1
     assert m3.nominal == 3.0/2.0
@@ -106,3 +104,21 @@ def test_medida_div_1():
     assert m4.nominal == 2.0/3.0
     assert m4.incerteza == 0
     assert unidades_em_texto(m4.unidades_originais) == "L Pa kg⁻¹"
+
+def test_medida_abs_1():
+    m1 = Medida("-3+-1", "kg/m")
+    m2 = abs(m1)
+    assert m2.nominal == 3
+    assert m2.incerteza == 1
+    assert unidades_em_texto(m2.unidades_originais) == "kg m⁻¹"
+
+# def test_medida_divmod_1():
+#     m1 = Medida("11+-1", "kg/m")
+#     m2, m3 = divmod(m1, 2)
+#     assert m2.nominal == 5
+#     assert m2.incerteza == 0.5
+#     assert unidades_em_texto(m2.unidades_originais) == "kg m⁻¹"
+#     assert m3.nominal == 1
+#     assert m3.incerteza == 0.5
+#     assert unidades_em_texto(m3.unidades_originais) == "kg m⁻¹"
+

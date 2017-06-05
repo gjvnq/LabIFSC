@@ -40,16 +40,24 @@ class Medida:
         self.si_nominal = self.nominal * mul_nom + add_nom
         self.si_incerteza = (self.nominal * mul_err + mul_nom * self.incerteza)  + add_err
 
-    def _checa_dim(self, other):
-        if self.dimensao != other.dimensao:
-            raise Exception("dimensões físicas incomaptíveis: {} vs {}".format(dimensao_em_texto(self.dimensao), dimensao_em_texto(other.dimensao)))
-    def _eh_medida(self, other):
-        if not isinstance(other, Medida):
+    def _checa_dim(self, outro):
+        if self.dimensao != outro.dimensao:
+            raise Exception("dimensões físicas incomaptíveis: {} vs {}".format(dimensao_em_texto(self.dimensao), dimensao_em_texto(outro.dimensao)))
+    def _eh_medida(self, outro):
+        if not isinstance(outro, Medida):
             raise Exception("medidas só podem ser comparadas, somadas ou subitraídas com outras medidas")
-    def _torne_medida(self, other):
-        if not isinstance(other, Medida):
-            return Medida(other)
-        return other
+    def _torne_medida(self, outro, converter):
+        m = outro
+        if not isinstance(outro, Medida):
+            m = Medida(outro)
+        if converter:
+            return m.converta(self.unidades_originais)
+        else:
+            return m
+
+    def converta(self, unidades):
+        nom, err = converte_unidades(self.nominal, self.incerteza, self.unidades_originais, unidades)
+        return Medida((nom, err), unidades)
 
     def __str__(self):
         return "{}±{} {}".format(self.nominal, self.incerteza, unidades_em_texto(self.unidades_originais))
@@ -57,73 +65,79 @@ class Medida:
     def __repr__(self):
         return "<{}±{} {} = {}±{} {}>".format(self.nominal, self.incerteza, unidades_em_texto(self.unidades_originais), self.si_nominal, self.si_incerteza, dimensao_em_texto(self.dimensao))
 
-    def __eq__(self, other):
-        self._eh_medida(other)
-        self._checa_dim(other)
-        return abs(self.si_nominal - other.si_nominal) <= 2 * (self.si_incerteza + other.si_incerteza)
-    def __ne__(self, other):
-        self._eh_medida(other)
-        self._checa_dim(other)
-        return abs(self.si_nominal - other.si_nominal) > 3 * (self.si_incerteza + other.si_incerteza)
-    def __add__(self, other):
-        self._eh_medida(other)
-        self._checa_dim(other)
-        nom, err = converte_unidades(other.nominal, other.incerteza, other.unidades_originais, self.unidades_originais)
-        return Medida((self.nominal+nom, self.incerteza+err), self.unidades_originais)
-    def __sub__(self, other):
-        self._eh_medida(other)
-        self._checa_dim(other)
-        nom, err = converte_unidades(other.nominal, other.incerteza, other.unidades_originais, self.unidades_originais)
-        return Medida((self.nominal-nom, self.incerteza+err), self.unidades_originais)
-    def __mul__(self, other):
-        other = self._torne_medida(other)
-        nom = self.nominal * other.nominal
-        err = self.nominal * other.incerteza + self.incerteza * other.nominal
-        m = Medida((nom, err), simplifica_unidades(self.unidades_originais, other.unidades_originais))
+    def __eq__(self, outro):
+        self._eh_medida(outro)
+        self._checa_dim(outro)
+        return abs(self.si_nominal - outro.si_nominal) <= 2 * (self.si_incerteza + outro.si_incerteza)
+    def __ne__(self, outro):
+        self._eh_medida(outro)
+        self._checa_dim(outro)
+        return abs(self.si_nominal - outro.si_nominal) > 3 * (self.si_incerteza + outro.si_incerteza)
+    def __add__(self, outro):
+        self._eh_medida(outro)
+        self._checa_dim(outro)
+        outro = self._torne_medida(outro, True)
+        return Medida((self.nominal+outro.nominal, self.incerteza+outro.incerteza), self.unidades_originais)
+    def __sub__(self, outro):
+        self._eh_medida(outro)
+        self._checa_dim(outro)
+        outro = self._torne_medida(outro, True)
+        return Medida((self.nominal-outro.nominal, self.incerteza+outro.incerteza), self.unidades_originais)
+    def __mul__(self, outro):
+        outro = self._torne_medida(outro, False)
+        nom = self.nominal * outro.nominal
+        err = self.nominal * outro.incerteza + self.incerteza * outro.nominal
+        m = Medida((nom, err), simplifica_unidades(self.unidades_originais, outro.unidades_originais))
         return m
-    def __floordiv__(self, other):
-        m = self.__div__(other)
+    def __div__(self, outro):
+        outro = self._torne_medida(outro, False)
+        nom = self.nominal / outro.nominal
+        err = ((self.nominal * outro.incerteza) + self.incerteza * outro.nominal)/outro.nominal**2
+        m = Medida((nom, err), simplifica_unidades(self.unidades_originais, outro.unidades_originais, inverte=True))
+        return m
+    def __floordiv__(self, outro):
+        m = self.__div__(outro)
         nom = floor(m.nominal)
         err = abs(m.nominal-nom) + m.incerteza
         return Medida((nom, err), m.unidades_originais)
-    def __truediv__(self, other):
-        return self.__div__(other)
-    def __mod__(self, other):
+    def __truediv__(self, outro):
+        return self.__div__(outro)
+    def __mod__(self, outro):
         pass
-    def __divmod__(self, other):
-        pass
-    def __pow__(self, other):
-        if isinstance(other, Medida):
+    def __divmod__(self, outro):
+        outro = self._torne_medida(outro)
+
+        q_nom = floor(self.nominal/outro.nominal)
+        r_nom = self.nominal(q_nom*outro.nominal)
+
+        return 0, 0
+    def __pow__(self, outro):
+        if isinstance(outro, Medida):
             raise Exception("não implementado")
         else:
-            return Medida((self.nominal**other, other*self.nominal**(other-1)*self.incerteza), self.unidades_originais)
-    def __div__(self, other):
-        other = self._torne_medida(other)
-        nom = self.nominal / other.nominal
-        err = ((self.nominal * other.incerteza) + self.incerteza * other.nominal)/other.nominal**2
-        m = Medida((nom, err), simplifica_unidades(self.unidades_originais, other.unidades_originais, inverte=True))
-        return m
+            return Medida((self.nominal**outro, outro*self.nominal**(outro-1)*self.incerteza), self.unidades_originais)
     def __abs__(self):
-        pass
-    def __complex__(self):
-        pass
+        m = Medida((abs(self.nominal), self.incerteza), self.unidades_originais)
+        return m
     def __int__(self):
-        pass
+        return int(self.nominal)
     def __float__(self):
-        pass
-    def __radd__(self, other):
-        pass
-    def __rsub__(self, other):
-        pass
-    def __rmul__(self, other):
-        pass
-    def __rfloordiv__(self, other):
-        pass
-    def __rmod__(self, other):
-        pass
-    def __rdivmod__(self, other):
-        pass
-    def __rpow__(self, other):
-        pass
-    def __rdiv__(self, other):
-        pass
+        return float(self.nominal)
+    def __complex__(self):
+        return complex(self.nominal)
+    def __radd__(self, outro):
+        return Medida(outro).__add__(self)
+    def __rsub__(self, outro):
+        return Medida(outro).__sub__(self)
+    def __rmul__(self, outro):
+        return Medida(outro).__mul__(self)
+    def __rfloordiv__(self, outro):
+        return Medida(outro).__floordiv__(self)
+    def __rmod__(self, outro):
+        return Medida(outro).__mod__(self)
+    def __rdivmod__(self, outro):
+        return Medida(outro).__divmod__(self)
+    def __rpow__(self, outro):
+        return Medida(outro).__pow__(self)
+    def __rdiv__(self, outro):
+        return Medida(outro).__div__(self)

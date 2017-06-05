@@ -312,6 +312,7 @@ def parse_dimensions(txt):
     num = ""
     dim = ""
     txt = txt.replace(" ", "")
+    txt = txt.replace("∅", "")
     ans = [0, 0, 0, 0, 0, 0, 0]
     for i, c in enumerate(txt):
         # Se estamos lendo letras
