@@ -4,6 +4,7 @@ LabIFSC/__init__.py
 LabIFSC/geral.py
 LabIFSC/grafico.py
 LabIFSC/lista_de_unidades.py
+LabIFSC/matematica.py
 LabIFSC/medida.py
 LabIFSC/tabela.py
 LabIFSC/unidade.py

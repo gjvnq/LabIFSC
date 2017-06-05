@@ -313,6 +313,7 @@ def parse_dimensions(txt):
     dim = ""
     txt = txt.replace(" ", "")
     txt = txt.replace("∅", "")
+    txt += " "
     ans = [0, 0, 0, 0, 0, 0, 0]
     for i, c in enumerate(txt):
         # Se estamos lendo letras
@@ -327,12 +328,15 @@ def parse_dimensions(txt):
             if i == len(txt)-1:
                 # Terminamos de ler o expoente da dimensão
                 num += c
-                num = int(num)
+                if len(num) == 0 or num == " ":
+                    num = 1
+                else:
+                    num = int(num)
                 ans[MAPA_DE_DIMENSOES[dim]] += num
             elif c in MAPA_DE_DIMENSOES:
                 try:
                     # Terminamos de ler o expoente da dimensão
-                    if len(num) == 0:
+                    if len(num) == 0 or num == " ":
                         num = 1
                     else:
                         num = int(num)
@@ -435,3 +439,8 @@ def simplifica_unidades(la, lb_=[], inverte=False):
     pos.sort(key=lambda u: u.simbolo)
     neg.sort(key=lambda u: u.simbolo)
     return pos+neg
+
+def torna_medida(x):
+    if not isinstance(x, Medida):
+        return Medida(x)
+    return x

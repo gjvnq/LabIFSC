@@ -1,6 +1,7 @@
 #!/usr/bin/env python
 # -*- coding: utf-8 -*-
 
+from copy import copy
 from math import floor
 from .geral import acha_unidade, calcula_dimensao, analisa_numero, dimensao_em_texto, fator_de_conversao_para_si, unidades_em_texto, converte_unidades, analisa_unidades, simplifica_unidades
 
@@ -20,7 +21,7 @@ class Medida:
         elif isinstance(valor, str):
             self.nominal, self.incerteza = analisa_numero(valor)
         elif isinstance(valor, tuple) and len(valor) == 2:
-            self.nominal, self.incerteza = float(valor[0]), float(valor[1])
+            self.nominal, self.incerteza = float(valor[0]), abs(float(valor[1]))
         else:
             try:
                 self.nominal = float(valor)
@@ -30,7 +31,7 @@ class Medida:
         # Veja as unidades
         self.unidades_originais = []
         if isinstance(unidade_txt, list):
-            self.unidades_originais = unidade_txt
+            self.unidades_originais = copy(unidade_txt)
         elif unidade_txt != None:
             self.unidades_originais = analisa_unidades(unidade_txt)
         self.dimensao = calcula_dimensao(self.unidades_originais)
@@ -141,6 +142,9 @@ class Medida:
     def __rdivmod__(self, outro):
         return Medida(outro).__divmod__(self)
     def __rpow__(self, outro):
-        return Medida(outro).__pow__(self)
+        outro = float(outro)
+        return Medida((
+            outro**self.nominal,
+            outro**self.nominal * math.log(outro) * self.incerteza))
     def __rdiv__(self, outro):
         return Medida(outro).__div__(self)
