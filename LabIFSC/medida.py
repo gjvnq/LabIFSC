@@ -105,12 +105,15 @@ class Medida:
     def __mod__(self, outro):
         pass
     def __divmod__(self, outro):
-        outro = self._torne_medida(outro)
+        outro = self._torne_medida(outro, False)
+        a = self.__floordiv__(1)
+        b = outro.__floordiv__(1)
+        unidades = simplifica_unidades(self.unidades_originais, outro.unidades_originais, inverte=True)
 
-        q_nom = floor(self.nominal/outro.nominal)
-        r_nom = self.nominal(q_nom*outro.nominal)
-
-        return 0, 0
+        q_nom, r_nom = divmod(int(a.nominal), int(b.nominal))
+        err = ((self.nominal * outro.incerteza) + self.incerteza * outro.nominal)/outro.nominal**2
+        err *= 1/outro.nominal
+        return Medida((q_nom, err), unidades), Medida((r_nom, err), unidades)
     def __pow__(self, outro):
         if isinstance(outro, Medida):
             raise Exception("não implementado")

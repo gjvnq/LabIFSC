@@ -112,13 +112,13 @@ def test_medida_abs_1():
     assert m2.incerteza == 1
     assert unidades_em_texto(m2.unidades_originais) == "kg m⁻¹"
 
-# def test_medida_divmod_1():
-#     m1 = Medida("11+-1", "kg/m")
-#     m2, m3 = divmod(m1, 2)
-#     assert m2.nominal == 5
-#     assert m2.incerteza == 0.5
-#     assert unidades_em_texto(m2.unidades_originais) == "kg m⁻¹"
-#     assert m3.nominal == 1
-#     assert m3.incerteza == 0.5
-#     assert unidades_em_texto(m3.unidades_originais) == "kg m⁻¹"
+def test_medida_divmod_1():
+    m1 = Medida("11+-1", "kg/m")
+    m2, m3 = divmod(m1, 2)
+    assert m2.nominal == 5
+    assert m2.incerteza == 0.25
+    assert unidades_em_texto(m2.unidades_originais) == "kg m⁻¹"
+    assert m3.nominal == 1
+    assert m3.incerteza == 0.25
+    assert unidades_em_texto(m3.unidades_originais) == "kg m⁻¹"
 
