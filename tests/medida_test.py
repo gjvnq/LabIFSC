@@ -82,10 +82,8 @@ def test_medida_sub_2():
 def test_medida_mul_1():
     m1 = Medida("1+-0.1", "kg^2/m^3")
     print(m1.dimensao)
-    print("----1----")
     m2 = Medida("1+-0.1", "lb/kg")
     print(m2.dimensao)
-    print("----2----")
     m3 = m1*m2
     m4 = m2*m1
     assert m3.nominal == 1
@@ -94,3 +92,17 @@ def test_medida_mul_1():
     assert m4.nominal == 1
     assert m4.incerteza == 0.2
     assert unidades_em_texto(m4.unidades_originais) == "kg lb m⁻³"
+
+def test_medida_div_1():
+    m1 = Medida("3", "kg/m")
+    print(m1.dimensao)
+    m2 = Medida("2", "L*Pa/m")
+    print(m2.unidades_originais)
+    m3 = m1/m2
+    m4 = m2/m1
+    assert m3.nominal == 3.0/2.0
+    assert m3.incerteza == 0
+    assert unidades_em_texto(m3.unidades_originais) == "kg L⁻¹ Pa⁻¹"
+    assert m4.nominal == 2.0/3.0
+    assert m4.incerteza == 0
+    assert unidades_em_texto(m4.unidades_originais) == "L Pa kg⁻¹"

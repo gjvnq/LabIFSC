@@ -78,12 +78,12 @@ class Medida:
         other = self._torne_medida(other)
         nom = self.nominal * other.nominal
         err = self.nominal * other.incerteza + self.incerteza * other.nominal
-        m = Medida((nom, err), simplifica_unidades(self.unidades_originais+other.unidades_originais))
-        print(self.__repr__(), "*", other.__repr__(), "=", m.__repr__())
+        m = Medida((nom, err), simplifica_unidades(self.unidades_originais, other.unidades_originais))
         return m
-
     def __floordiv__(self, other):
         pass
+    def __truediv__(self, other):
+        return self.__div__(other)
     def __mod__(self, other):
         pass
     def __divmod__(self, other):
@@ -94,7 +94,11 @@ class Medida:
         else:
             return Medida((self.nominal**other, other*self.nominal**(other-1)*self.incerteza), self.unidades_originais)
     def __div__(self, other):
-        pass
+        other = self._torne_medida(other)
+        nom = self.nominal / other.nominal
+        err = ((self.nominal * other.incerteza) + self.incerteza * other.nominal)/other.nominal**2
+        m = Medida((nom, err), simplifica_unidades(self.unidades_originais, other.unidades_originais, inverte=True))
+        return m
     def __abs__(self):
         pass
     def __complex__(self):

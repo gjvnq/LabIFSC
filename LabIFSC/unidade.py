@@ -50,7 +50,7 @@ class Unidade:
     def nova_unidade_por_expoente(self, e):
         global TODAS_AS_UNIDADES
 
-        # Veja os casos triviais
+        # Veja os casos especiais
         if e == 1:
             return self
         if e == 0:
@@ -59,6 +59,8 @@ class Unidade:
             return TODAS_AS_UNIDADES[self.simbolo+gera_expoente(e)]
         if self.nome+"^"+str(e) in TODAS_AS_UNIDADES:
             return TODAS_AS_UNIDADES[self.nome+"^"+str(e)]
+        if self != self.unidade_pai:
+            return self.unidade_pai.nova_unidade_por_expoente(self.expoente_pai*e)
 
         # Gere a nova unidade
         cte_m = self.cte_multiplicativa**e

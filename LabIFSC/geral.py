@@ -347,13 +347,14 @@ def parse_dimensions(txt):
             raise Exception("{} não é um modo válido para parse_dimensions (c={} i={} txt='{}')".format(mode, c, i, txt))
     return tuple(ans)
 
-def acha_unidade(nome):
+def acha_unidade(simbolo):
     global TODAS_AS_UNIDADES
-    nome = nome.lower()
-    if nome in TODAS_AS_UNIDADES:
-        return TODAS_AS_UNIDADES[nome]
+    if simbolo in TODAS_AS_UNIDADES:
+        return TODAS_AS_UNIDADES[simbolo]
+    elif simbolo.lower() in TODAS_AS_UNIDADES:
+        return TODAS_AS_UNIDADES[simbolo.lower()]
     else:
-        raise Exception("unidade '{}' não encontrada".format(nome))
+        raise Exception("unidade '{}' não encontrada".format(simbolo))
 
 def dimensao_em_texto(dim):
     txt = ""
@@ -403,7 +404,15 @@ def converte_unidades(valor, incerteza, unidades_originais, unidades_de_destino)
     err = (incerteza*fator[0] + valor*fator[1]) + fator[3]
     return nom, err
 
-def simplifica_unidades(l_unidades):
+def simplifica_unidades(la, lb_=[], inverte=False):
+    lb = lb_
+    if inverte == True:
+        lb = []
+        for i, u in enumerate(lb_):
+            lb.append(u.nova_unidade_por_expoente(-1))
+    l_unidades = la + lb
+
+
     d = {} # Dicionário Unidade-Expoente
     for u in l_unidades:
         if u.unidade_pai in d:
@@ -413,10 +422,13 @@ def simplifica_unidades(l_unidades):
     pos = [] # Parte com expoentes positivos
     neg = [] # Parte com expoentes negativos
     for u, e in d.items():
+        u2 = u.nova_unidade_por_expoente(e)
+        if u2 is None:
+            continue
         if e >= 1:
-            pos.append(u.nova_unidade_por_expoente(e))
+            pos.append(u2)
         elif e <= 1:
-            neg.append(u.nova_unidade_por_expoente(e))
+            neg.append(u2)
         else:
             pass # Não coloque nada com expoente zero
     pos.sort(key=lambda u: u.simbolo)
