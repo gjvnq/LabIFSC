@@ -1,7 +1,7 @@
 #!/usr/bin/env python
 # -*- coding: utf-8 -*-
 
-from .geral import acha_unidade, calcula_dimensao, analisa_numero, dimensao_em_texto, fator_de_conversao_para_si, unidades_em_texto, converte_unidades
+from .geral import acha_unidade, calcula_dimensao, analisa_numero, dimensao_em_texto, fator_de_conversao_para_si, unidades_em_texto, converte_unidades, analisa_unidades, simplifica_unidades
 
 class Medida:
     unidades_originais = [] # Tuplas (objeto unidade, expoente) na ordem em que foram entradas  
@@ -31,9 +31,7 @@ class Medida:
         if isinstance(unidade_txt, list):
             self.unidades_originais = unidade_txt
         elif unidade_txt != None:
-            unidade_txt = unidade_txt.split(" ")
-            for unidade in unidade_txt:
-                self.unidades_originais.append(acha_unidade(unidade))
+            self.unidades_originais = analisa_unidades(unidade_txt)
         self.dimensao = calcula_dimensao(self.unidades_originais)
 
         # Converta para o SI
@@ -77,7 +75,13 @@ class Medida:
         nom, err = converte_unidades(other.nominal, other.incerteza, other.unidades_originais, self.unidades_originais)
         return Medida((self.nominal-nom, self.incerteza+err), self.unidades_originais)
     def __mul__(self, other):
-        pass
+        other = self._torne_medida(other)
+        nom = self.nominal * other.nominal
+        err = self.nominal * other.incerteza + self.incerteza * other.nominal
+        m = Medida((nom, err), simplifica_unidades(self.unidades_originais+other.unidades_originais))
+        print(self.__repr__(), "*", other.__repr__(), "=", m.__repr__())
+        return m
+
     def __floordiv__(self, other):
         pass
     def __mod__(self, other):
@@ -85,7 +89,10 @@ class Medida:
     def __divmod__(self, other):
         pass
     def __pow__(self, other):
-        pass
+        if isinstance(other, Medida):
+            raise Exception("não implementado")
+        else:
+            return Medida((self.nominal**other, other*self.nominal**(other-1)*self.incerteza), self.unidades_originais)
     def __div__(self, other):
         pass
     def __abs__(self):

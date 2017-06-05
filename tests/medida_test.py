@@ -1,6 +1,7 @@
 #!/usr/bin/env python
 # -*- coding: utf-8 -*-
 
+import pytest
 from LabIFSC import Medida, unidades_em_texto
 
 def test_medida_eq_1():
@@ -57,6 +58,13 @@ def test_medida_add_3():
     assert m4.incerteza == 0.4280839895013123
     assert unidades_em_texto(m4.unidades_originais) == "ft"
 
+def test_medida_add_4():
+    m1 = Medida(1, "m")
+    m2 = Medida("2+/-0.1", "kg")
+    with pytest.raises(Exception) as excinfo:
+        m = m1 + m2
+    assert "dimensões físicas incomaptíveis: L1 vs M1" in str(excinfo)
+
 def test_medida_sub_1():
     m1 = Medida(1, "m")
     m2 = Medida(2, "m")
@@ -70,3 +78,19 @@ def test_medida_sub_2():
     m = m1-m2
     assert m.nominal == -1
     assert m.incerteza == 0.11
+
+def test_medida_mul_1():
+    m1 = Medida("1+-0.1", "kg^2/m^3")
+    print(m1.dimensao)
+    print("----1----")
+    m2 = Medida("1+-0.1", "lb/kg")
+    print(m2.dimensao)
+    print("----2----")
+    m3 = m1*m2
+    m4 = m2*m1
+    assert m3.nominal == 1
+    assert m3.incerteza == 0.2
+    assert unidades_em_texto(m3.unidades_originais) == "kg lb m⁻³"
+    assert m4.nominal == 1
+    assert m4.incerteza == 0.2
+    assert unidades_em_texto(m4.unidades_originais) == "kg lb m⁻³"

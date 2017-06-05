@@ -79,6 +79,11 @@ PREFIXOS_SI_CURTOS = {
 
 PREFIXOS_SI = dict(list(PREFIXOS_SI_CURTOS.items()) + list(PREFIXOS_SI_LONGOS.items()))
 
+def gera_expoente(num):
+    txt = str(num)
+    txt = txt.replace("0", "⁰").replace("1", "¹").replace("2", "²").replace("3", "³").replace("4", "⁴").replace("5", "⁵").replace("6", "⁶").replace("7", "⁷").replace("8", "⁸").replace("9", "⁹").replace("+", "⁺").replace("-", "⁻").replace("i", "ⁱ")
+    return txt
+
 def analisa_numero(num):
     try:
         return float(num), 0.0
@@ -228,14 +233,13 @@ def analisa_unidades(txt):
     mul_cte = 1 # Fator multiplicativo para os expoentes. Serve apenas para regular o sinal
     modo = 0 # 0-Nome da unidade; 1-Expoente da unidade
     num_char = list("+-0123456789")
-    sep_char = list("*/")
+    sep_char = list("*/ ")
     nome_unidade = ""
     expoente_txt = ""
     tokens = []
     # Analise o textp
     for i, c in enumerate(txt):
         stop_flag = False
-        #print(i, c, modo, nome_unidade, expoente_txt)
         if modo == 0:
             if c in num_char:
                 modo = 1
@@ -278,7 +282,23 @@ def analisa_unidades(txt):
             base = TODAS_AS_UNIDADES[base]
         else:
             raise Exception("unidade desconhecida em '{}'".format(tok[0]))
-    return tokens
+    ans = []
+    for tok in tokens:
+        # Pegue o expoente
+        e = 1
+        if len(tok[1]) != 0:
+            e = int(tok[1])
+        e *= tok[2]
+        # Encontre a unidade
+        try:
+            u = acha_unidade(tok[0]+"^"+tok[1])
+            e = 1
+        except:
+            u = acha_unidade(tok[0])
+            u = u.nova_unidade_por_expoente(e)
+        if u is not None:
+            ans.append(u)
+    return ans
 
 def calcula_dimensao(unidades):
     dim = [0, 0, 0, 0, 0, 0, 0]
@@ -340,6 +360,8 @@ def dimensao_em_texto(dim):
     for i, v in enumerate(dim):
         if v != 0:
             txt += MAPA_DE_DIMENSOES[i] + str(v)
+    if len(txt) == 0:
+        txt = "∅"
     return txt
 
 def fator_de_conversao_para_si(unidades):
@@ -380,3 +402,23 @@ def converte_unidades(valor, incerteza, unidades_originais, unidades_de_destino)
     nom = valor*fator[0] + fator[2]
     err = (incerteza*fator[0] + valor*fator[1]) + fator[3]
     return nom, err
+
+def simplifica_unidades(l_unidades):
+    d = {} # Dicionário Unidade-Expoente
+    for u in l_unidades:
+        if u.unidade_pai in d:
+            d[u.unidade_pai] += u.expoente_pai
+        else:
+            d[u.unidade_pai] = u.expoente_pai
+    pos = [] # Parte com expoentes positivos
+    neg = [] # Parte com expoentes negativos
+    for u, e in d.items():
+        if e >= 1:
+            pos.append(u.nova_unidade_por_expoente(e))
+        elif e <= 1:
+            neg.append(u.nova_unidade_por_expoente(e))
+        else:
+            pass # Não coloque nada com expoente zero
+    pos.sort(key=lambda u: u.simbolo)
+    neg.sort(key=lambda u: u.simbolo)
+    return pos+neg
