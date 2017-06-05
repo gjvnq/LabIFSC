@@ -1,6 +1,7 @@
 #!/usr/bin/env python
 # -*- coding: utf-8 -*-
 
+from math import floor
 from .geral import acha_unidade, calcula_dimensao, analisa_numero, dimensao_em_texto, fator_de_conversao_para_si, unidades_em_texto, converte_unidades, analisa_unidades, simplifica_unidades
 
 class Medida:
@@ -81,7 +82,10 @@ class Medida:
         m = Medida((nom, err), simplifica_unidades(self.unidades_originais, other.unidades_originais))
         return m
     def __floordiv__(self, other):
-        pass
+        m = self.__div__(other)
+        nom = floor(m.nominal)
+        err = abs(m.nominal-nom) + m.incerteza
+        return Medida((nom, err), m.unidades_originais)
     def __truediv__(self, other):
         return self.__div__(other)
     def __mod__(self, other):
