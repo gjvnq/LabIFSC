@@ -16,7 +16,7 @@ def registra_unidades():
     Unidade("côvado", "côv", "côv", "L1", Medida("0.52635(285)"), Medida(0))
     Unidade("fermi", "fm", "fm", "L1", Medida(1E-15), Medida(0))
     Unidade("pé métrico", "pém", "pém", "L1", Medida(math.sqrt(0.1)), Medida(0))
-    Unidade("pé internacional", "ft", "ft", "L1", Medida(1E-15), Medida(0))
+    Unidade("pé internacional", "ft", "ft", "L1", Medida(0.3048), Medida(0))
     Unidade("furlong", "fur", "fur", "L1", Medida(201.168), Medida(0))
     Unidade("mão", "mão", "mão", "L1", Medida(0.1016), Medida(0))
     Unidade("polegada internacional", "in", "in", "L1", Medida(0.0254), Medida(0))

@@ -1,7 +1,7 @@
 #!/usr/bin/env python
 # -*- coding: utf-8 -*-
 
-from .geral import TODAS_AS_UNIDADES, parse_dimensions, acha_unidade
+from .geral import TODAS_AS_UNIDADES, parse_dimensions, acha_unidade, dimensao_em_texto
 
 class Unidade:
     nome = ""
@@ -31,3 +31,14 @@ class Unidade:
 
     def __hash__(self):
         return hash(self.nome)
+
+    def __str__(self):
+        return self.nome
+
+    def __eq__(self, other):
+        if isinstance(other, Unidade):
+            return self.nome == other.nome
+        return False
+
+    def __repr__(self):
+        return "<{}:*{}:+{}:{}>".format(self.nome, self.cte_multiplicativa.nominal, self.cte_aditiva.nominal, dimensao_em_texto(self.dimensao))

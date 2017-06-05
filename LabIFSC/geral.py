@@ -88,9 +88,18 @@ def analisa_numero(num):
         except:
             return analisa_numero_forma_mais_ou_menos(num)
 
+def fix_str(txt):
+    import sys
+    if sys.version_info >= (3,0):
+        return txt
+    if isinstance(txt, unicode):
+        return txt
+    return txt.decode('utf-8')
+
 # Analisa números do tipo: (13.415±0.001)*10^9 ; (13.415+/-0.001)E9 ; (13.415 \pm 0.001)*10^9
 def analisa_numero_forma_mais_ou_menos(txt):
     txt = txt.replace("(", "").replace(")", "").replace("{", "").replace("}", "").replace(" ", "").replace("+-", "±").replace("+/-", "±").replace("\\pm", "±").replace("×", "").replace("x", "").replace("10^", "E").replace(",", ".").replace("'", "")
+    txt = fix_str(txt)
     base = ""
     incerteza = ""
     expoente = ""
@@ -100,12 +109,12 @@ def analisa_numero_forma_mais_ou_menos(txt):
         if modo == 0:
             if c in num_char:
                 base += c
-            elif c == "±":
+            elif c == u"±":
                 modo = 1
             elif c == "E":
                 modo = 2
             else:
-                raise Exception("caractere {} não em esperado (modo = {}, i = {}, txt = {})".format(c, modo, i, txt))
+                raise Exception("caractere {} ({}) não em esperado (modo = {}, i = {}, txt = {})".format(c, hex(ord(c)), modo, i, txt))
         elif modo == 1:
             if c in num_char:
                 incerteza += c
@@ -332,3 +341,42 @@ def dimensao_em_texto(dim):
         if v != 0:
             txt += MAPA_DE_DIMENSOES[i] + str(v)
     return txt
+
+def fator_de_conversao_para_si(unidades):
+    mul_nom = 1.0
+    mul_err = 0.0
+    add_nom = 0.0
+    add_err = 0.0
+    for unidade in unidades:
+        mul_nom *= unidade.cte_multiplicativa.nominal
+        mul_err += mul_nom*unidade.cte_multiplicativa.incerteza + unidade.cte_multiplicativa.nominal*mul_err
+        add_nom += unidade.cte_aditiva.nominal
+        add_err += unidade.cte_aditiva.incerteza
+    return mul_nom, mul_err, add_nom, add_err
+
+def unidades_em_texto(unidades, sep=" "):
+    txt = ""
+    first = True
+    for unidade in unidades:
+        if first == False:
+            txt += sep
+        txt += unidade.simbolo
+        first = False
+    return txt
+
+def converte_unidades(valor, incerteza, unidades_originais, unidades_de_destino):
+    if unidades_originais == unidades_de_destino:
+        return valor, incerteza
+
+    fator_inicial = fator_de_conversao_para_si(unidades_originais)
+    fator_final = fator_de_conversao_para_si(unidades_de_destino)
+    # Não faço ideia de se a parte aditiva está certa
+    fator = (
+        fator_inicial[0]/fator_final[0],
+        (fator_inicial[0]*fator_final[1] + fator_inicial[1]*fator_final[0])/(fator_final[0])**2,
+        fator_inicial[0]+fator_final[0],
+        fator_inicial[1]+fator_final[1]
+    )
+    nom = valor*fator[0] + fator[2]
+    err = (incerteza*fator[0] + valor*fator[1]) + fator[3]
+    return nom, err

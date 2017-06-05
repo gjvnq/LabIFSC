@@ -1,13 +1,15 @@
 #!/usr/bin/env python
 # -*- coding: utf-8 -*-
 
-from .geral import acha_unidade, calcula_dimensao, analisa_numero, dimensao_em_texto
+from .geral import acha_unidade, calcula_dimensao, analisa_numero, dimensao_em_texto, fator_de_conversao_para_si, unidades_em_texto, converte_unidades
 
 class Medida:
     unidades_originais = [] # Tuplas (objeto unidade, expoente) na ordem em que foram entradas  
     dimensao = (0, 0, 0, 0, 0, 0, 0)
     nominal = 0.0
     incerteza = 0.0
+    si_nominal = 0.0
+    si_incerteza = 0.0
 
     def __init__(self, valor, unidade_txt=None):
         # Analise o valor
@@ -26,31 +28,54 @@ class Medida:
 
         # Veja as unidades
         self.unidades_originais = []
-        if unidade_txt != None:
+        if isinstance(unidade_txt, list):
+            self.unidades_originais = unidade_txt
+        elif unidade_txt != None:
             unidade_txt = unidade_txt.split(" ")
             for unidade in unidade_txt:
                 self.unidades_originais.append(acha_unidade(unidade))
         self.dimensao = calcula_dimensao(self.unidades_originais)
 
+        # Converta para o SI
+        mul_nom, mul_err, add_nom, add_err = fator_de_conversao_para_si(self.unidades_originais)
+        self.si_nominal = self.nominal * mul_nom + add_nom
+        self.si_incerteza = (self.nominal * mul_err + mul_nom * self.incerteza)  + add_err
+
     def _checa_dim(self, other):
-        print(self.dimensao, other.dimensao)
         if self.dimensao != other.dimensao:
             raise Exception("dimensões físicas incomaptíveis: {} vs {}".format(dimensao_em_texto(self.dimensao), dimensao_em_texto(other.dimensao)))
+    def _eh_medida(self, other):
+        if not isinstance(other, Medida):
+            raise Exception("medidas só podem ser comparadas, somadas ou subitraídas com outras medidas")
+    def _torne_medida(self, other):
+        if not isinstance(other, Medida):
+            return Medida(other)
+        return other
+
+    def __str__(self):
+        return "{}±{} {}".format(self.nominal, self.incerteza, unidades_em_texto(self.unidades_originais))
+
+    def __repr__(self):
+        return "<{}±{} {} = {}±{} {}>".format(self.nominal, self.incerteza, unidades_em_texto(self.unidades_originais), self.si_nominal, self.si_incerteza, dimensao_em_texto(self.dimensao))
 
     def __eq__(self, other):
-        if not isinstance(other, Medida):
-            raise Exception("medidas só podem ser comparadas com outras medidas")
+        self._eh_medida(other)
         self._checa_dim(other)
-        return abs(self.nominal - other.nominal) <= 2 * (self.incerteza + other.incerteza)
+        return abs(self.si_nominal - other.si_nominal) <= 2 * (self.si_incerteza + other.si_incerteza)
     def __ne__(self, other):
-        if not isinstance(other, Medida):
-            raise Exception("medidas só podem ser comparadas com outras medidas")
+        self._eh_medida(other)
         self._checa_dim(other)
-        return abs(self.nominal - other.nominal) > 3 * (self.incerteza + other.incerteza)
+        return abs(self.si_nominal - other.si_nominal) > 3 * (self.si_incerteza + other.si_incerteza)
     def __add__(self, other):
-        pass
+        self._eh_medida(other)
+        self._checa_dim(other)
+        nom, err = converte_unidades(other.nominal, other.incerteza, other.unidades_originais, self.unidades_originais)
+        return Medida((self.nominal+nom, self.incerteza+err), self.unidades_originais)
     def __sub__(self, other):
-        pass
+        self._eh_medida(other)
+        self._checa_dim(other)
+        nom, err = converte_unidades(other.nominal, other.incerteza, other.unidades_originais, self.unidades_originais)
+        return Medida((self.nominal-nom, self.incerteza+err), self.unidades_originais)
     def __mul__(self, other):
         pass
     def __floordiv__(self, other):
