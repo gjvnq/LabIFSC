@@ -17,3 +17,5 @@ __pycache__/
 
 *.pyc
 .cache
+test.py
+demo.py
