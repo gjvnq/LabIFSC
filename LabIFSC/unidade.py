@@ -7,6 +7,7 @@ class Unidade:
     nome = ""
     simbolo = ""
     simbolo_latex = ""
+    simbolo_siunitx = ""
     # As dimensões são (comprimento, ângulo, massa, tempo, temperatura, corrente, mol)
     dimensao = (0, 0, 0, 0, 0, 0, 0)
     # Valor que deve ser multiplicado para obter o valor no MKS
@@ -16,10 +17,15 @@ class Unidade:
     unidade_pai = None
     expoente_pai = None
 
-    def __init__(self, nome, simbolo, simbolo_latex, dimensao, cte_multiplicativa, cte_aditiva):
+    def __init__(self, nome, simbolo, simbolo_latex, dimensao, cte_multiplicativa, cte_aditiva, simbolo_siunitx=None):
         self.nome = str(nome).replace(" ", "_")
         self.simbolo = str(simbolo)
         self.simbolo_latex = str(simbolo_latex)
+
+        if simbolo_siunitx is None or simbolo_siunitx == "":
+            self.simbolo_siunitx = str(simbolo_latex)
+        else:
+            self.simbolo_siunitx = str(simbolo_siunitx)
 
         self.cte_multiplicativa = cte_multiplicativa
         self.cte_aditiva = cte_aditiva
@@ -34,7 +40,7 @@ class Unidade:
         # Registre unidade
         global TODAS_AS_UNIDADES
         TODAS_AS_UNIDADES[nome.lower()] = self
-        if simbolo.lower() not in TODAS_AS_UNIDADES:
+        if simbolo not in TODAS_AS_UNIDADES:
             TODAS_AS_UNIDADES[simbolo] = self
 
     def __hash__(self):
@@ -62,11 +68,22 @@ class Unidade:
         if self != self.unidade_pai:
             return self.unidade_pai.nova_unidade_por_expoente(self.expoente_pai*e)
 
+        # Decida como será o símbolo para o siunitx
+        simbolo_siunitx = ""
+        if self.simbolo_siunitx != "":
+            simbolo_siunitx = self.simbolo_siunitx
+            if abs(e) == 2:
+                simbolo_siunitx += "\\squared"
+            elif abs(e) == 3:
+                simbolo_siunitx += "\\cubed"
+            else:
+                simbolo_siunitx += "\\tothe{{{}}}".format(abs(e))
+
         # Gere a nova unidade
         cte_m = self.cte_multiplicativa**e
         cte_a = self.cte_aditiva
         dim = tuple([x*e for x in self.dimensao])
-        u = Unidade(self.nome+"^"+str(e), self.simbolo+gera_expoente(e), self.simbolo_latex+"^"+str(e), dim, cte_m, cte_a)
+        u = Unidade(self.nome+"^"+str(e), self.simbolo+gera_expoente(e), self.simbolo_latex+"^"+str(e), dim, cte_m, cte_a, simbolo_siunitx)
         u.unidade_pai = self
         u.expoente_pai = e
         return u

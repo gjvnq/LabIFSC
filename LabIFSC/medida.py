@@ -61,7 +61,7 @@ class Medida:
         return Medida((nom, err), unidades)
 
     def __str__(self):
-        return "{}±{} {}".format(self.nominal, self.incerteza, unidades_em_texto(self.unidades_originais))
+        return "{}".format(self)
 
     def __repr__(self):
         return "<{}±{} {} = {}±{} {}>".format(self.nominal, self.incerteza, unidades_em_texto(self.unidades_originais), self.si_nominal, self.si_incerteza, dimensao_em_texto(self.dimensao))
@@ -197,6 +197,9 @@ class Medida:
                 err = str(int(err))
             else:
                 err = str(err)
+            # Verifique se não faltam zeros no nominal
+            while nom.find(".") >= 0 and err.find(".") >= 0 and len(nom)-nom.find(".") < len(err)-err.find("."):
+                nom += "0"
         elif rouding == "full":
             nom = str(self_nom)
             err = str(self_err)
@@ -208,10 +211,10 @@ class Medida:
             uni = unidades_em_texto(self.unidades_originais, estilo="latex")
             base = "{nom}\\pm{err}\\textrm{{ {uni}}}"
             base_exp = "({nom}\\pm{err})\cdot10^{{{expn}}}\\textrm{{ {uni}}}"
-        elif modo == "latex-si":
-            uni = unidades_em_texto(self.unidades_originais, estilo="latex")
-            base = "\\SI{{{nom}E{expn}+-{err}E{expn}}}{{{uni}}}"
-            base_exp = "\\SI{{{nom}+-{err}}}{{{uni}}}"
+        elif modo == "siunitx":
+            uni = unidades_em_texto(self.unidades_originais, estilo="siunitx")
+            base = "\\SI{{{nom}+-{err}}}{{{uni}}}"
+            base_exp = "\\SI{{{nom}E{expn}+-{err}E{expn}}}{{{uni}}}"
         elif modo == "ascii":
             uni = unidades_em_texto(self.unidades_originais, estilo="latex")
             base = "{nom}+/-{err} {uni}"

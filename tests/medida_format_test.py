@@ -16,7 +16,7 @@ def test_medida_format_A2():
 
 def test_medida_format_A3():
     m = Medida((31.5467, 1.52), "ft^2")
-    assert "{:latex-si}".format(m) == "\SI{32+-2}{\\foot\\squared}"
+    assert "{:siunitx}".format(m) == "\SI{32+-2}{\\foot\\squared}"
 
 def test_medida_format_A4():
     m = Medida((31.5467, 1.52), "ft^2")
@@ -36,7 +36,7 @@ def test_medida_format_B2():
 
 def test_medida_format_B3():
     m = Medida((31.5467, 1.52), "ft^2")
-    assert "{:latex-si,full}".format(m) == "\SI{31.5467+-1.52}{\\foot\\squared}"
+    assert "{:siunitx,full}".format(m) == "\SI{31.5467+-1.52}{\\foot\\squared}"
 
 def test_medida_format_B4():
     m = Medida((31.5467, 1.52), "ft^2")
@@ -60,7 +60,7 @@ def test_medida_format_D2():
 
 def test_medida_format_D3():
     m = Medida((31546.7, 1520), "ft^2")
-    assert "{:latex-si,full,3}".format(m) == "\SI{31.5467+-1.52}{\\foot\\squared}"
+    assert "{:siunitx,full,3}".format(m) == "\SI{31.5467E3+-1.52E3}{\\foot\\squared}"
 
 def test_medida_format_D4():
     m = Medida((31546.7, 1520), "ft^2")

@@ -385,11 +385,18 @@ def fator_de_conversao_para_si(unidades):
 def unidades_em_texto(unidades, sep=" ", estilo=""):
     txt = ""
     first = True
+    per = False
     for unidade in unidades:
         if first == False:
             txt += sep
+
         if estilo == "latex":
             txt += unidade.simbolo_latex
+        elif estilo == "siunitx":
+            if per == False and unidade.expoente_pai < 0:
+                per = True
+                txt += "\per"
+            txt += unidade.simbolo_siunitx
         else:
             txt += unidade.simbolo
         first = False
