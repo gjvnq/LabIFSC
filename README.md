@@ -92,16 +92,35 @@ A propagação de erro é feita automaticamente nas seguintes operções: ```+``
 ```python
 m1 = Medida("20+/-1")
 m2 = Medida("4+/-2")
-print(m1+m2) # 24.0±3.0
-print(m1-m2) # 16.0±3.0
-print(m1*m2) # 80.0±44.0
-print(m1/m2) # 5.0±2.75
-print(m1**4) # 160000.0±32000.0
+print(m1+m2) # 24±3
+print(m1-m2) # 16±3
+print(m1*m2) # 80±40
+print(m1/m2) # 5±3
+print(m1**4) # 160000±30000
+print(3**m2) # 81±200
 print(m1**m2) # Erro
-print(3**m2) # 81.0±177.9751907642338
 ```
 
-### Funções Trigonométricas
+Infelizmente, não há propagação de erro automática nas funções da biblioteca ```math```, porém, a LabIFSC provê as seguintes funções com propagação de erro:
+
+```python
+m1 = Medida("20+/-1.5")
+print(cos(m1))     # 0±1
+print(sin(m1))     # 0.9000000000000000±0.6000000000000001
+print(tan(m1))     # 2±9
+print(cot(m1))     # 0±2
+print(sec(m1))     # 2±8
+print(csc(m1))     # 2.2000000000000000±0.7000000000000001
+print(arc_cos(m1)) # 0.8±0.1 rad
+print(arc_sin(m1)) # 0.8±0.1 rad
+print(arc_tan(m1)) # 0.6±0.1 rad
+print(log(m1))     # 2.73±0.07
+print(log10(m1))   # 1.30±0.03
+print(log2(m1))    # 4.3±0.1
+print(ln(m1))      # 3±0.08
+print(sqrt(m1))    # 4.5±0.2
+print(cbr(m1))     # 2.71±0.0
+```
 
 ## Conversão de Unidades
 

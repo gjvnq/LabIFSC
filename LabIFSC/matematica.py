@@ -2,10 +2,14 @@
 # -*- coding: utf-8 -*-
 
 import math
-from .geral import torna_medida
 from .medida import Medida
 
 __all__ = ["cos", "sin", "tan", "cot", "sec", "csc", "arc_cos", "arc_sin", "arc_tan", "log", "log10", "log2", "ln", "sqrt", "cbrt"]
+
+def torna_medida(x):
+    if not isinstance(x, Medida):
+        return Medida(x)
+    return x
 
 def cos(x):
     x    = torna_medida(x)
@@ -24,28 +28,28 @@ def sin(x):
 def tan(x):
     x    = torna_medida(x)
     nom  = math.tan(x.nominal)
-    err  = math.sec(x.nominal)**2
+    err  = (1.0/math.cos(x.nominal))**2
     err *= x.incerteza
     return Medida((nom, err))
 
 def cot(x):
     x    = torna_medida(x)
-    nom  = math.cot(x.nominal)
-    err  = math.csc(x.nominal)**2
+    nom  = (1.0/math.tan(x.nominal))
+    err  = (1.0/math.sin(x.nominal))**2
     err *= x.incerteza
     return Medida((nom, err))
 
 def sec(x):
     x    = torna_medida(x)
     nom  = math.tan(x.nominal)
-    err  = math.sec(x.nomial)*math.tan(x.nomial)
+    err  = (1.0/math.cos(x.nominal))*math.tan(x.nominal)
     err *= x.incerteza
     return Medida((nom, err))
 
 def csc(x):
     x    = torna_medida(x)
     nom  = math.tan(x.nominal)
-    err  = math.csc(x.nomial)*math.cot(x.nomial)
+    err  = (1.0/math.sin(x.nominal))*(1.0/math.tan(x.nominal))
     err *= x.incerteza
     return Medida((nom, err))
 
@@ -75,7 +79,7 @@ def log(x, b):
     nom  = math.log(x.nominal, b)
     err  = math.log(math.exp(1), b)/x.nominal
     err *= x.incerteza
-    return Medida((nom, err), x.unidades)
+    return Medida((nom, err), x.unidades_originais)
 
 def log2(x):
     return log(x, 2)

@@ -449,8 +449,3 @@ def simplifica_unidades(la, lb_=[], inverte=False):
     pos.sort(key=lambda u: u.simbolo)
     neg.sort(key=lambda u: u.simbolo)
     return pos+neg
-
-def torna_medida(x):
-    if not isinstance(x, Medida):
-        return Medida(x)
-    return x
