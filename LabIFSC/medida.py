@@ -3,7 +3,7 @@
 
 from copy import copy
 from math import floor, log, ceil
-from .geral import acha_unidade, calcula_dimensao, analisa_numero, dimensao_em_texto, fator_de_conversao_para_si, unidades_em_texto, converte_unidades, analisa_unidades, simplifica_unidades
+from .geral import acha_unidade, calcula_dimensao, analisa_numero, dimensao_em_texto, fator_de_conversao_para_si, unidades_em_texto, converte_unidades, analisa_unidades, simplifica_unidades, gera_expoente
 
 class Medida:
     unidades_originais = [] # Tuplas (objeto unidade, expoente) na ordem em que foram entradas  
@@ -152,33 +152,40 @@ class Medida:
     def __format__(self, fmt):
         fmt = fmt.split(",")
         modo = fmt[0]
+        exp = 0
         rouding = "ifsc"
         if len(fmt) >= 2:
             rouding = fmt[1]
+        if len(fmt) >= 3:
+            exp = int(fmt[2])
+        expf = str(exp)
+        self_nom = self.nominal*10**(-exp)
+        self_err = self.incerteza*10**(-exp)
         nom = ""
         sep = ""
         err = ""
         uni = ""
-        base = "{}{}{} {}"
+        base = "{nom}±{err} {uni}"
+        base_exp = "({nom}±{err})×10{expf} {uni}"
 
         if modo == "repr":
             return self.__repr__()
 
         if rouding == "ifsc" or rouding == "-":
-            exp = 0
-            nom = self.nominal
-            err = self.incerteza
+            n = 0
+            nom = self_nom
+            err = self_err
             # Arredonde o erro para a maior casa significativa
             while err < 1.0:
-                exp -= 1
+                n -= 1
                 err *= 10
             while err >= 10.0:
-                exp += 1
+                n += 1
                 err /= 10
-            err = round(err)*10**exp
+            err = round(err)*10**n
             # Arredonde o valor nominal de acrodo
-            if exp <= 0:
-                nom = round(nom, -exp)
+            if n <= 0:
+                nom = round(nom, -n)
             else:
                 nom = nom
             # Converta para string tomando cuidado com zeros desnecessários
@@ -191,24 +198,38 @@ class Medida:
             else:
                 err = str(err)
         elif rouding == "full":
-            nom = str(self.nominal)
-            err = str(self.incerteza)
+            nom = str(self_nom)
+            err = str(self_err)
         else:
             raise ValueError("{} não é um parâmetro válido de arredondamento".format(rouding))
         sep = "±"
         uni = unidades_em_texto(self.unidades_originais)
         if modo == "latex":
-            sep = "\\pm"
             uni = unidades_em_texto(self.unidades_originais, estilo="latex")
-            base = "{}{}{}\\textrm{{ {}}}"
+            base = "{nom}\\pm{err}\\textrm{{ {uni}}}"
+            base_exp = "({nom}\\pm{err})\cdot10^{{{expn}}}\\textrm{{ {uni}}}"
         elif modo == "latex-si":
-            sep = "+-"
             uni = unidades_em_texto(self.unidades_originais, estilo="latex")
-            base = "\\SI{{{}{}{}}}{{{}}}"
+            base = "\\SI{{{nom}E{expn}+-{err}E{expn}}}{{{uni}}}"
+            base_exp = "\\SI{{{nom}+-{err}}}{{{uni}}}"
         elif modo == "ascii":
-            sep = "+/-"
             uni = unidades_em_texto(self.unidades_originais, estilo="latex")
-            print(modo, sep, uni, nom, err, rouding)
+            base = "{nom}+/-{err} {uni}"
+            base_exp = "({nom}+/-{err})*10^{expf} {uni}"
+        else:
+            expf = gera_expoente(exp)
 
-        return base.format(nom, sep, err, uni)
+        # Prepare para imprimir
+        d = {}
+        d["nom"] = nom
+        d["err"] = err
+        d["uni"] = uni
+        d["expn"] = exp
+        d["expf"] = expf
+
+        if exp == 0:
+            return base.format(**d)
+        else:
+            return base_exp.format(**d)
+
         

@@ -51,17 +51,18 @@ def test_medida_format_C1():
     assert "{:repr}".format(m) == "<31.5467±1.52 ft² = {}±{} L2>".format(m.si_nominal, m.si_incerteza)
 
 def test_medida_format_D1():
-    m = Medida((31546.7, 152), "ft^2")
+    m = Medida((31546.7, 1520), "ft^2")
     assert "{:-,full,3}".format(m) == "(31.5467±1.52)×10³ ft²"
 
 def test_medida_format_D2():
-    m = Medida((31546.7, 152), "ft^2")
+    m = Medida((31546.7, 1520), "ft^2")
     assert "{:latex,full,3}".format(m) == "(31.5467\pm1.52)\\cdot10^{3}\\textrm{ ft^2}"
 
 def test_medida_format_D3():
-    m = Medida((31546.7, 152), "ft^2")
+    m = Medida((31546.7, 1520), "ft^2")
     assert "{:latex-si,full,3}".format(m) == "\SI{31.5467+-1.52}{\\foot\\squared}"
 
 def test_medida_format_D4():
-    m = Medida((31546.7, 152), "ft^2")
-    assert "{:ascii,full,3}".format(m) == "(31.5467+/-1.52)*10^3 ft^2"
+    m = Medida((31546.7, 1520), "ft^2")
+    txt = "{:ascii,full,3}".format(m)
+    assert txt == "({}+/-{})*10^3 ft^2".format(m.nominal/1E3, m.incerteza/1E3)
