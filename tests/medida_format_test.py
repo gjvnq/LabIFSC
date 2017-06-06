@@ -24,7 +24,7 @@ def test_medida_format_A4():
 
 def test_medida_format_A5():
     m = Medida((31.5467, 1.52), "ft^2")
-    assert "{:ascii}".format(m) == "32+/-2 ft^2"
+    assert "{:txt}".format(m) == "32+/-2 ft^2"
 
 def test_medida_format_B1():
     m = Medida((31.5467, 1.52), "ft^2")
@@ -44,7 +44,7 @@ def test_medida_format_B4():
 
 def test_medida_format_B5():
     m = Medida((31.5467, 1.52), "ft^2")
-    assert "{:ascii,full}".format(m) == "31.5467+/-1.52 ft^2"
+    assert "{:txt,full}".format(m) == "31.5467+/-1.52 ft^2"
 
 def test_medida_format_C1():
     m = Medida((31.5467, 1.52), "ft^2")
@@ -64,5 +64,5 @@ def test_medida_format_D3():
 
 def test_medida_format_D4():
     m = Medida((31546.7, 1520), "ft^2")
-    txt = "{:ascii,full,3}".format(m)
+    txt = "{:txt,full,3}".format(m)
     assert txt == "({}+/-{})*10^3 ft^2".format(m.nominal/1E3, m.incerteza/1E3)

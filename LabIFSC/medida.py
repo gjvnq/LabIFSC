@@ -220,7 +220,7 @@ class Medida:
             uni = unidades_em_texto(self.unidades_originais, estilo="siunitx")
             base = "\\SI{{{nom}+-{err}}}{{{uni}}}"
             base_exp = "\\SI{{{nom}E{expn}+-{err}E{expn}}}{{{uni}}}"
-        elif modo == "ascii":
+        elif modo == "txt":
             uni = unidades_em_texto(self.unidades_originais, estilo="latex")
             base = "{nom}+/-{err} {uni}"
             base_exp = "({nom}+/-{err})*10^{expf} {uni}"

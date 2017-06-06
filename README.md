@@ -54,7 +54,7 @@ print(m.si_nominal)   # 39.64
 print(m.si_incerteza) # 8.2296
 ```
 
-Os valores prefixados com ```si_``` estão em unidades do MKS, ou seja: metro, radiano, quilograma, segundo, kelvin, Ampère e mol. Mais detalhes serão apresentados adiante na parte de unidades.
+Os valores prefixados com ```si_``` estão em unidades do MKS, ou seja: metro, radiano, quilograma, segundo, kelvin, Ampère e mol. As dimensões físicas são, respectivamente: comprimento (L), ângulo (A), massa (M), tempo (T), temperatura (K), corrente (I) e "número" (N).
 
 ## Comparações
 
@@ -158,6 +158,55 @@ m4 = m1*m2/m3
 print(m4.converta("m^2 s^-1")) # 1.610±0.007 m² s⁻¹
 print(m4.converta("m^2/s"))    # 1.610±0.007 m² s⁻¹
 print(m4.converta("m^2/kg"))   # ValueError: dimensões físicas incompatíveis: L2T-1 vs L2M-1
+```
+
+## Formatação de Números
+
+Uma mesma medida pode ser impressa de diferentes formas:
+
+```python
+m1 = Medida("1.23456789+/-0.015", "m lb/s")
+
+# Formatação padrão, do jeito que os profs de lab gostam
+print(m1)              # 1.23±0.02 m lb s⁻¹
+print(str(m1))         # 1.23±0.02 m lb s⁻¹
+print("{}".format(m1)) # 1.23±0.02 m lb s⁻¹
+
+# Representação do objeto Medida. Temos o valor original à esquerda e o valor no SI, bem como a dimensão física, à direita
+print(m1.__repr__())        # <1.23456789±0.015 m lb s⁻¹ = 0.5599905751509993±0.00680388555 L1M1T-1>
+print("{:repr}".format(m1)) # <1.23456789±0.015 m lb s⁻¹ = 0.5599905751509993±0.00680388555 L1M1T-1>
+
+# Diferentes estilos de representação com o arredondamento padrão (arredondamento ifsc)
+print("{}".format(m1))          # 1.23±0.02 m lb s⁻¹
+print("{:-}".format(m1))        # 1.23±0.02 m lb s⁻¹
+print("{:latex}".format(m1))    # 1.23\pm0.02\textrm{ m lb s^-1}
+print("{:siunitex}".format(m1)) # 1.23±0.02 m lb s⁻¹
+print("{:txt}".format(m1))      # 1.23+/-0.02 m lb s^-1
+
+# Diferentes estilos de representação com o arredondamento do ifsc
+print("{}".format(m1))               # 1.23±0.02 m lb s⁻¹
+print("{:-,ifsc}".format(m1))        # 1.23±0.02 m lb s⁻¹
+print("{:latex,ifsc}".format(m1))    # 1.23\\pm0.02\\textrm{ m lb s^-1}
+print("{:siunitex,ifsc}".format(m1)) # 1.23±0.02 m lb s⁻¹
+print("{:txt,ifsc}".format(m1))      # 1.23+/-0.02 m lb s^-1
+
+# Diferentes estilos de representação sem arredondamento
+print("{:-,full}".format(m1))        # 1.23456789±0.015 m lb s⁻¹
+print("{:latex,full}".format(m1))    # 1.23456789\\pm0.015\\textrm{ m lb s^-1}
+print("{:siunitex,full}".format(m1)) # 1.23456789±0.015 m lb s⁻¹
+print("{:txt,full}".format(m1))      # 1.23456789+/-0.015 m lb s^-1
+
+# Diferentes estilos de representação com o arredondamento do ifsc usando 10^-2 como base
+print("{:-,ifsc,-2}".format(m1))        # (123±2)×10⁻² m lb s⁻¹
+print("{:latex,ifsc,-2}".format(m1))    # (123\pm2)\cdot10^{-2}\textrm{ m lb s^-1}
+print("{:siunitex,ifsc,-2}".format(m1)) # (123±2)×10⁻² m lb s⁻¹
+print("{:txt,ifsc,-2}".format(m1))      # (123+/-2)*10^-2 m lb s^-1
+
+# Diferentes estilos de representação sem arredondamento usando 10^-2 como base
+print("{:-,full,-2}".format(m1))        # (123.45678899999999±1.5)×10⁻² m lb s⁻¹
+print("{:latex,full,-2}".format(m1))    # (123.45678899999999\pm1.5)\cdot10^{-2}\textrm{ m lb s^-1}
+print("{:siunitex,full,-2}".format(m1)) # (123.45678899999999±1.5)×10⁻² m lb s⁻¹
+print("{:txt,full,-2}".format(m1))      # (123.45678899999999+/-1.5)*10^-2 m lb s^-1
 ```
 
 ## Sequências e Tabelas
