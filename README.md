@@ -145,8 +145,8 @@ print(m1*m2) #  1.000±0.002 ft m
 print(m2*m1) #  1.000±0.002 ft m
 print(m1/m2) #  1.000±0.002 m ft⁻¹
 print(m2/m1) #  1.000±0.002 ft m⁻¹
-print(m1*m3) #  1.000±0.02 m s
-print(m1/m3) #  1.000±0.02 m s⁻¹
+print(m1*m3) #  1.00±0.02 m s
+print(m1/m3) #  1.00±0.02 m s⁻¹
 
 print(m1+m3) # ValueError: dimensões físicas incompatíveis: L1 vs T1
 ```
