@@ -122,7 +122,7 @@ print(sqrt(m1))    # 4.5±0.2
 print(cbr(m1))     # 2.71±0.0
 ```
 
-## Conversão de Unidades
+## Unidades
 
 Todas as medidas podem ter um parâmetro adicional de unidade após o valor. Por exemplo:
 
@@ -134,7 +134,7 @@ m3 = Medida("1+/-0.02", "s")
 
 (O arquivo ```LabIFSC/lista_de_unidades.py``` contém todas as unidades suportadas por esta biblioteca.)
 
-As contas sempre ficam nas unidades do primeiro argumento nas operações:
+As contas de soma e subtração sempre ficam nas unidades do primeiro argumento nas operações desde que as dimensões físicas sejam iguais. No caso contrário, tem-se um erro. Já as contas de multiplicação e divisão combinam as unidades.
 
 ```python
 print(m1+m2) #   2.610±0.001 m
@@ -147,11 +147,7 @@ print(m1/m2) # 1±0.002 m ft⁻¹
 print(m2/m1) # 1±0.002 ft m⁻¹
 print(m1*m3) # 1±0.02 m s
 print(m1/m3) # 1±0.02 m s⁻¹
-```
 
-Note que nas operações de soma e subtração, as unidades devem ter a mesma grandeza física.
-
-```python
 print(m1+m3) # ValueError: dimensões físicas incompatíveis: L1 vs T1
 ```
 

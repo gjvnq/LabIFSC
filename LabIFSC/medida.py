@@ -193,17 +193,18 @@ class Medida:
             else:
                 nom = nom
             # Converta para string tomando cuidado com zeros desnecessários
-            if nom == int(nom):
-                nom = str(int(nom))
-            else:
-                nom = "{:.6f}".format(nom).rstrip('0') # Isso evita com que 0.0000001 cause problemas
             if err == int(err):
                 err = str(int(err))
+                nom = str(int(nom))
             else:
                 err = "{:.6f}".format(err).rstrip('0') # Isso evita com que 0.0000001 cause problemas
+                nom = "{:.6f}".format(nom) # Isso evita com que 0.0000001 cause problemas
             # Verifique se não faltam zeros no nominal
             while nom.find(".") >= 0 and err.find(".") >= 0 and len(nom)-nom.find(".") < len(err)-err.find("."):
                 nom += "0"
+            # Verifique se não há zeros em excesso no nominal
+            while nom.find(".") >= 0 and err.find(".") >= 0 and len(nom)-nom.find(".") > len(err)-err.find("."):
+                nom = nom[:-1]
         elif rouding == "full":
             nom = str(self_nom)
             err = str(self_err)
