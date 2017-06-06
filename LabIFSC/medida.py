@@ -192,11 +192,11 @@ class Medida:
             if nom == int(nom):
                 nom = str(int(nom))
             else:
-                nom = str(nom)
+                nom = "{:.6f}".format(nom).rstrip('0') # Isso evita com que 0.0000001 cause problemas
             if err == int(err):
                 err = str(int(err))
             else:
-                err = str(err)
+                err = "{:.6f}".format(err).rstrip('0') # Isso evita com que 0.0000001 cause problemas
             # Verifique se não faltam zeros no nominal
             while nom.find(".") >= 0 and err.find(".") >= 0 and len(nom)-nom.find(".") < len(err)-err.find("."):
                 nom += "0"

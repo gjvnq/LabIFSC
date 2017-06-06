@@ -106,11 +106,11 @@ Infelizmente, não há propagação de erro automática nas funções da bibliot
 ```python
 m1 = Medida("20+/-1.5")
 print(cos(m1))     # 0±1
-print(sin(m1))     # 0.9000000000000000±0.6000000000000001
+print(sin(m1))     # 0.9±0.6
 print(tan(m1))     # 2±9
 print(cot(m1))     # 0±2
 print(sec(m1))     # 2±8
-print(csc(m1))     # 2.2000000000000000±0.7000000000000001
+print(csc(m1))     # 2.2±0.7
 print(arc_cos(m1)) # 0.8±0.1 rad
 print(arc_sin(m1)) # 0.8±0.1 rad
 print(arc_tan(m1)) # 0.6±0.1 rad
