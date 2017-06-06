@@ -43,7 +43,7 @@ class Medida:
 
     def _checa_dim(self, outro):
         if self.dimensao != outro.dimensao:
-            raise ValueError("dimensões físicas incomaptíveis: {} vs {}".format(dimensao_em_texto(self.dimensao), dimensao_em_texto(outro.dimensao)))
+            raise ValueError("dimensões físicas incompatíveis: {} vs {}".format(dimensao_em_texto(self.dimensao), dimensao_em_texto(outro.dimensao)))
     def _eh_medida(self, outro):
         if not isinstance(outro, Medida):
             raise TypeError("medidas só podem ser comparadas com outras medidas")
@@ -57,6 +57,10 @@ class Medida:
             return m
 
     def converta(self, unidades):
+        if isinstance(unidades, str):
+            unidades = analisa_unidades(unidades)
+        m = Medida(1, unidades)
+        self._checa_dim(m)
         nom, err = converte_unidades(self.nominal, self.incerteza, self.unidades_originais, unidades)
         return Medida((nom, err), unidades)
 

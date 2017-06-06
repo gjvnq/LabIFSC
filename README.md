@@ -124,6 +124,46 @@ print(cbr(m1))     # 2.71±0.0
 
 ## Conversão de Unidades
 
+Todas as medidas podem ter um parâmetro adicional de unidade após o valor. Por exemplo:
+
+```python
+m1 = Medida("1+/-0.001", "m")
+m2 = Medida("1+/-0.001", "ft")
+m3 = Medida("1+/-0.02", "s")
+```
+
+(O arquivo ```LabIFSC/lista_de_unidades.py``` contém todas as unidades suportadas por esta biblioteca.)
+
+As contas sempre ficam nas unidades do primeiro argumento nas operações:
+
+```python
+print(m1+m2) #   2.610±0.001 m
+print(m2+m1) #   5.586±0.004 ft
+print(m1-m2) #  -0.610±0.001 m
+print(m2-m1) #  -3.586±0.004 ft
+print(m1*m2) # 1±0.002 ft m
+print(m2*m1) # 1±0.002 ft m
+print(m1/m2) # 1±0.002 m ft⁻¹
+print(m2/m1) # 1±0.002 ft m⁻¹
+print(m1*m3) # 1±0.02 m s
+print(m1/m3) # 1±0.02 m s⁻¹
+```
+
+Note que nas operações de soma e subtração, as unidades devem ter a mesma grandeza física.
+
+```python
+print(m1+m3) # ValueError: dimensões físicas incompatíveis: L1 vs T1
+```
+
+Para converter as unidades:
+
+```python
+m4 = m1*m2/m3
+print(m4.converta("m^2 s^-1")) # 1.610±0.007 m² s⁻¹
+print(m4.converta("m^2/s"))    # 1.610±0.007 m² s⁻¹
+print(m4.converta("m^2/kg"))   # ValueError: dimensões físicas incompatíveis: L2T-1 vs L2M-1
+```
+
 ## Sequências e Tabelas
 
 ## Gráficos

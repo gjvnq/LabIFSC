@@ -9,10 +9,10 @@ def test_unidade_1():
     m2 = Medida(1, "kg")
     with pytest.raises(Exception) as excinfo:
         m1 == m2
-    assert "dimensões físicas incomaptíveis: L1 vs M1" in str(excinfo)
+    assert "dimensões físicas incompatíveis: L1 vs M1" in str(excinfo)
     with pytest.raises(Exception) as excinfo:
         m1 != m2
-    assert "dimensões físicas incomaptíveis: L1 vs M1" in str(excinfo)
+    assert "dimensões físicas incompatíveis: L1 vs M1" in str(excinfo)
 
 def test_unidade_2():
     m1 = Medida(0.3048, "m")
