@@ -36,12 +36,12 @@ from LabIFSC import *
 A principal classe é a ```Medida```. Ela pode ser inicializada das seguintes formas:
 
 ```python
- # A unidade é sempre opcional
- m = Medida((130, 27), "m")  # Medida((valor nominal, erro), unidade)
- m = Medida("130+-27", "m")  # Medida(valor+-erro, unidade)
- m = Medida("130+/-27", "m") # Medida(valor+/-erro, unidade)
- m = Medida("130±27", "m")   # Medida(valor±erro, unidade)
- m = Medida("130(27)", "m")   # Medida(valor(erro), unidade)
+# A unidade é sempre opcional
+m = Medida((130, 27), "m")  # Medida((valor nominal, erro), unidade)
+m = Medida("130+-27", "m")  # Medida(valor+-erro, unidade)
+m = Medida("130+/-27", "m") # Medida(valor+/-erro, unidade)
+m = Medida("130±27", "m")   # Medida(valor±erro, unidade)
+m = Medida("130(27)", "m")  # Medida(valor(erro), unidade)
 ```
 
 ## Comparações
