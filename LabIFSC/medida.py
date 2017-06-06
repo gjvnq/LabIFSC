@@ -2,7 +2,7 @@
 # -*- coding: utf-8 -*-
 
 from copy import copy
-from math import floor
+from math import floor, log, ceil
 from .geral import acha_unidade, calcula_dimensao, analisa_numero, dimensao_em_texto, fator_de_conversao_para_si, unidades_em_texto, converte_unidades, analisa_unidades, simplifica_unidades
 
 class Medida:
@@ -43,10 +43,10 @@ class Medida:
 
     def _checa_dim(self, outro):
         if self.dimensao != outro.dimensao:
-            raise Exception("dimensões físicas incomaptíveis: {} vs {}".format(dimensao_em_texto(self.dimensao), dimensao_em_texto(outro.dimensao)))
+            raise ValueError("dimensões físicas incomaptíveis: {} vs {}".format(dimensao_em_texto(self.dimensao), dimensao_em_texto(outro.dimensao)))
     def _eh_medida(self, outro):
         if not isinstance(outro, Medida):
-            raise Exception("medidas só podem ser comparadas, somadas ou subitraídas com outras medidas")
+            raise TypeError("medidas só podem ser comparadas com outras medidas")
     def _torne_medida(self, outro, converter):
         m = outro
         if not isinstance(outro, Medida):
@@ -75,12 +75,12 @@ class Medida:
         self._checa_dim(outro)
         return abs(self.si_nominal - outro.si_nominal) > 3 * (self.si_incerteza + outro.si_incerteza)
     def __add__(self, outro):
-        self._eh_medida(outro)
+        outro = self._torne_medida(outro, False)
         self._checa_dim(outro)
         outro = self._torne_medida(outro, True)
         return Medida((self.nominal+outro.nominal, self.incerteza+outro.incerteza), self.unidades_originais)
     def __sub__(self, outro):
-        self._eh_medida(outro)
+        outro = self._torne_medida(outro, False)
         self._checa_dim(outro)
         outro = self._torne_medida(outro, True)
         return Medida((self.nominal-outro.nominal, self.incerteza+outro.incerteza), self.unidades_originais)
@@ -117,7 +117,7 @@ class Medida:
         return Medida((q_nom, err), unidades), Medida((r_nom, err), unidades)
     def __pow__(self, outro):
         if isinstance(outro, Medida):
-            raise Exception("não implementado")
+            raise NotImplementedError("a exponenciação entre medidas não está implementada")
         else:
             return Medida((self.nominal**outro, outro*self.nominal**(outro-1)*self.incerteza), self.unidades_originais)
     def __abs__(self):
@@ -145,6 +145,70 @@ class Medida:
         outro = float(outro)
         return Medida((
             outro**self.nominal,
-            outro**self.nominal * math.log(outro) * self.incerteza))
+            outro**self.nominal * log(outro) * self.incerteza))
     def __rdiv__(self, outro):
         return Medida(outro).__div__(self)
+
+    def __format__(self, fmt):
+        fmt = fmt.split(",")
+        modo = fmt[0]
+        rouding = "ifsc"
+        if len(fmt) >= 2:
+            rouding = fmt[1]
+        nom = ""
+        sep = ""
+        err = ""
+        uni = ""
+        base = "{}{}{} {}"
+
+        if modo == "repr":
+            return self.__repr__()
+
+        if rouding == "ifsc" or rouding == "-":
+            exp = 0
+            nom = self.nominal
+            err = self.incerteza
+            # Arredonde o erro para a maior casa significativa
+            while err < 1.0:
+                exp -= 1
+                err *= 10
+            while err >= 10.0:
+                exp += 1
+                err /= 10
+            err = round(err)*10**exp
+            # Arredonde o valor nominal de acrodo
+            if exp <= 0:
+                nom = round(nom, -exp)
+            else:
+                nom = nom
+            # Converta para string tomando cuidado com zeros desnecessários
+            if nom == int(nom):
+                nom = str(int(nom))
+            else:
+                nom = str(nom)
+            if err == int(err):
+                err = str(int(err))
+            else:
+                err = str(err)
+        elif rouding == "full":
+            nom = str(self.nominal)
+            err = str(self.incerteza)
+        else:
+            raise ValueError("{} não é um parâmetro válido de arredondamento".format(rouding))
+        sep = "±"
+        uni = unidades_em_texto(self.unidades_originais)
+        if modo == "latex":
+            sep = "\\pm"
+            uni = unidades_em_texto(self.unidades_originais, estilo="latex")
+            base = "{}{}{}\\textrm{{ {}}}"
+        elif modo == "latex-si":
+            sep = "+-"
+            uni = unidades_em_texto(self.unidades_originais, estilo="latex")
+            base = "\\SI{{{}{}{}}}{{{}}}"
+        elif modo == "ascii":
+            sep = "+/-"
+            uni = unidades_em_texto(self.unidades_originais, estilo="latex")
+            print(modo, sep, uni, nom, err, rouding)
+
+        return base.format(nom, sep, err, uni)
+        

@@ -382,13 +382,16 @@ def fator_de_conversao_para_si(unidades):
         add_err += unidade.cte_aditiva.incerteza
     return mul_nom, mul_err, add_nom, add_err
 
-def unidades_em_texto(unidades, sep=" "):
+def unidades_em_texto(unidades, sep=" ", estilo=""):
     txt = ""
     first = True
     for unidade in unidades:
         if first == False:
             txt += sep
-        txt += unidade.simbolo
+        if estilo == "latex":
+            txt += unidade.simbolo_latex
+        else:
+            txt += unidade.simbolo
         first = False
     return txt
 

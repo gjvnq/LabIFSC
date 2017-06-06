@@ -44,6 +44,18 @@ m = Medida("130±27", "m")   # Medida(valor±erro, unidade)
 m = Medida("130(27)", "m")  # Medida(valor(erro), unidade)
 ```
 
+Uma instância de Medida tem os seguintes atributos:
+
+```python
+m = Medida("130±27", "ft")
+print(m.nominal)      # 130.0
+print(m.incerteza)    # 27.0
+print(m.si_nominal)   # 39.64
+print(m.si_incerteza) # 8.2296
+```
+
+Os valores prefixados com ```si_``` estão em unidades do MKS, ou seja: metro, radiano, quilograma, segundo, kelvin, Ampère e mol. Mais detalhes serão apresentados adiante na parte de unidades.
+
 ## Comparações
 
 As comparações entre medidas não comparam os valores em si, mas sim verificam se as medidas são estatisticamente equivalentes.
@@ -74,6 +86,20 @@ m1 != m2 # True
 ```
 
 ## Propagação de Erro
+
+A propagação de erro é feita automaticamente nas seguintes operções: ```+```, ```-```, ```*```, ```/```, ```**```.
+
+```python
+m1 = Medida("20+/-1")
+m2 = Medida("4+/-2")
+print(m1+m2) # 24.0±3.0
+print(m1-m2) # 16.0±3.0
+print(m1*m2) # 80.0±44.0
+print(m1/m2) # 5.0±2.75
+print(m1**4) # 160000.0±32000.0
+print(m1**m2) # Erro
+print(3**m2) # 81.0±177.9751907642338
+```
 
 ### Funções Trigonométricas
 

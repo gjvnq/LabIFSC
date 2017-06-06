@@ -5,7 +5,7 @@ from .geral import TODAS_AS_UNIDADES, MAPA_DE_DIMENSOES, PREFIXOS_SI_LONGOS, PRE
 from .medida import Medida
 from .unidade import Unidade
 from .lista_de_unidades import registra_unidades
-from .matematica import cos, sin, tan, cot, sec, csc, arc_cos, arc_sin, arc_tan, log, log10, log2, ln
+from .matematica import cos, sin, tan, cot, sec, csc, arc_cos, arc_sin, arc_tan, log, log10, log2, ln, sqrt, cbrt
 
 
 __all__ = [
@@ -13,7 +13,7 @@ __all__ = [
     "Medida",
     "Unidade",
     "registra_unidades",
-    "cos", "sin", "tan", "cot", "sec", "csc", "arc_cos", "arc_sin", "arc_tan", "log", "log10", "log2", "ln"
+    "cos", "sin", "tan", "cot", "sec", "csc", "arc_cos", "arc_sin", "arc_tan", "log", "log10", "log2", "ln", "sqrt", "cbrt"
 ]
 
 def init():

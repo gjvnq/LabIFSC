@@ -1,1 +1,4 @@
-{}
+{
+  "tests/medida_format_test.py::test_medida_format_A3": true,
+  "tests/medida_format_test.py::test_medida_format_B3": true
+}

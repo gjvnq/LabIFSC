@@ -5,7 +5,7 @@ import math
 from .geral import torna_medida
 from .medida import Medida
 
-__all__ = ["cos", "sin", "tan", "cot", "sec", "csc", "arc_cos", "arc_sin", "arc_tan", "log", "log10", "log2", "ln"]
+__all__ = ["cos", "sin", "tan", "cot", "sec", "csc", "arc_cos", "arc_sin", "arc_tan", "log", "log10", "log2", "ln", "sqrt", "cbrt"]
 
 def cos(x):
     x    = torna_medida(x)
@@ -85,3 +85,9 @@ def log10(x):
 
 def ln(x):
     return log(x, math.exp(1))
+
+def sqrt(x):
+    return x**0.5
+
+def cbrt(x):
+    return x**(1.0/3.0)
