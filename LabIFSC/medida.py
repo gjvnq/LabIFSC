@@ -5,6 +5,9 @@ from copy import copy
 from math import floor, log, ceil
 from .geral import acha_unidade, calcula_dimensao, analisa_numero, dimensao_em_texto, fator_de_conversao_para_si, unidades_em_texto, converte_unidades, analisa_unidades, simplifica_unidades, gera_expoente
 
+def M(*args, **kwargs):
+    return Medida(*args, **kwargs)
+
 class Medida:
     unidades_originais = [] # Tuplas (objeto unidade, expoente) na ordem em que foram entradas  
     dimensao = (0, 0, 0, 0, 0, 0, 0)

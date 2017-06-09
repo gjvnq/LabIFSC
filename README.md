@@ -33,7 +33,8 @@ Para utilizar essa biblioteca:
 from LabIFSC import *
 ```
 
-A principal classe é a ```Medida```. Ela pode ser inicializada das seguintes formas:
+A principal classe é a ```Medida```. Ela pode ser inicializada de diversas formas como mostrado abaixo.
+(Note que todas essas medidas são iguais, o que muda é a apenas o formato)
 
 ```python
 # A unidade é sempre opcional
@@ -44,9 +45,20 @@ m = Medida("130±27", "m")   # Medida(valor±erro, unidade)
 m = Medida("130(27)", "m")  # Medida(valor(erro), unidade)
 ```
 
+Também podemos usar a abreviatura ```M()```, a qual funciona de forma idêntica:
+
+```python
+m = M((130, 27), "m")  # Medida((valor nominal, erro), unidade)
+m = M("130+-27", "m")  # Medida(valor+-erro, unidade)
+m = M("130+/-27", "m") # Medida(valor+/-erro, unidade)
+m = M("130±27", "m")   # Medida(valor±erro, unidade)
+m = M("130(27)", "m")  # Medida(valor(erro), unidade)
+```
+
 Uma instância de Medida tem os seguintes atributos:
 
 ```python
+# Lembre-se que ft é o símbolo para pés
 m = Medida("130±27", "ft")
 print(m.nominal)      # 130.0
 print(m.incerteza)    # 27.0
@@ -54,7 +66,13 @@ print(m.si_nominal)   # 39.64
 print(m.si_incerteza) # 8.2296
 ```
 
-Os valores prefixados com ```si_``` estão em unidades do MKS, ou seja: metro, radiano, quilograma, segundo, kelvin, Ampère e mol. As dimensões físicas são, respectivamente: comprimento (L), ângulo (A), massa (M), tempo (T), temperatura (K), corrente (I) e "número" (N).
+Os valores prefixados com ```si_``` estão em unidades do MKS, ou seja: metro, radiano, quilograma, segundo, kelvin, Ampère e mol. As dimensões físicas são, respectivamente: comprimento (L), ângulo (A), massa (M), tempo (T), temperatura (K), corrente (I) e "número" (N). Quando uma medida é adimensional, usa-se ∅ como mostrado no excerto abaixo:
+
+```python
+# Lembre-se que lb é o símbolo para libras/pounds
+M("1") #<1.0±0.0  = 1.0±0.0 ∅>
+M("1", "lb/kg") # <1.0±0.0 lb kg⁻¹ = 0.45359237±0.0 ∅>
+```
 
 ## Comparações
 
@@ -62,7 +80,7 @@ As comparações entre medidas não comparam os valores em si, mas sim verificam
 
 A equação que determina se duas medidas são equivalentes é: ```|x₁ - x₂| ≤ 2(σ₁ + σ₂)```. Já a equação~que determina não equivalência é ```|x₁ - x₂| > 3(σ₁ + σ₂)```.
 
-Cuidado deve ser tomado já que duas medidas podem não ser iguais nem diferentes.
+Cuidado deve ser tomado já que duas medidas podem não ser iguais nem diferentes ao mesmo tempo.
 
 ```python
 m1 = Medida("100+/-7")
