@@ -1,7 +1,7 @@
 #!/usr/bin/env python
 # -*- coding: utf-8 -*-
 
-from .geral import TODAS_AS_UNIDADES, parse_dimensions, acha_unidade, dimensao_em_texto, gera_expoente
+from .geral import TODAS_AS_UNIDADES, parse_dimensions, acha_unidade, dimensao_em_texto, gera_expoente, sigla_prefixo, nome_prefixo, sigla_prefixo_latex, comando_siunitx_prefixo
 
 class Unidade:
     nome = ""
@@ -86,6 +86,36 @@ class Unidade:
         u = Unidade(self.nome+"^"+str(e), self.simbolo+gera_expoente(e), self.simbolo_latex+"^"+str(e), dim, cte_m, cte_a, simbolo_siunitx)
         u.unidade_pai = self
         u.expoente_pai = e
+        return u
+
+    def nova_unidade_por_prefixo(self, cte):
+        global TODAS_AS_UNIDADES
+
+        # Veja os casos especiais
+        if cte == 1:
+            return self
+        if cte == 0:
+            return None
+        simbolo = nome_prefixo(cte)+self.simbolo
+        if simbolo in TODAS_AS_UNIDADES:
+            return TODAS_AS_UNIDADES[simbolo]
+        simbolo = sigla_prefixo(cte)+self.simbolo
+        if simbolo in TODAS_AS_UNIDADES:
+            return TODAS_AS_UNIDADES[simbolo]
+        if self != self.unidade_pai:
+            return self.unidade_pai.nova_unidade_por_expoente(self.expoente_pai*e)
+
+        # Decida como será o símbolo para o siunitx
+        simbolo_siunitx = ""
+        if self.simbolo_siunitx != "":
+            simbolo_siunitx = comando_siunitx_prefixo(cte)+self.simbolo_siunitx
+
+        # Gere a nova unidade
+        cte_m = self.cte_multiplicativa*cte
+        cte_a = self.cte_aditiva*cte
+        u = Unidade(nome_prefixo(cte)+self.nome, simbolo, sigla_prefixo_latex(cte)+self.simbolo_latex, self.dimensao, cte_m, cte_a, simbolo_siunitx)
+        u.unidade_pai = self
+        u.expoente_pai = 1
         return u
 
     def __repr__(self):

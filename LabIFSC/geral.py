@@ -49,6 +49,35 @@ PREFIXOS_SI_LONGOS = {
     "yobi":   2**80
 }
 
+PREFIXOS_SI_LONGOS_REV = {
+    10**18  : "exa",
+    10**15  : "peta",
+    10**12  : "tera",
+    10**9   : "giga",
+    10**6   : "mega",
+    10**3   : "kilo",
+    10**3   : "quilo",
+    10**2   : "hecto",
+    10**1   : "deca",
+    10**0   : "",
+    10**-1  : "deci",
+    10**-2  : "centi",
+    10**-3  : "milli",
+    10**-6  : "micro",
+    10**-9  : "nano",
+    10**-12 : "pico",
+    10**-15 : "femto",
+    10**-18 : "atto",
+    2**10   : "kibi",
+    2**20   : "mebi",
+    2**30   : "gibi",
+    2**40   : "tebi",
+    2**50   : "pebi",
+    2**60   : "exbi",
+    2**70   : "zebi",
+    2**80   : "yobi",
+}
+
 PREFIXOS_SI_CURTOS = {
     "E":  10**18,
     "P":  10**15,
@@ -76,6 +105,91 @@ PREFIXOS_SI_CURTOS = {
     "Zi":  2**70,
     "Yi":  2**80
 }
+
+PREFIXOS_SI_CURTOS_REV = {
+    10**18  : "E",
+    10**15  : "P",
+    10**12  : "T",
+    10**9   : "G",
+    10**6   : "M",
+    10**3   : "k",
+    10**2   : "h",
+    10**1   : "da",
+    10**0   : "",
+    10**-1  : "d",
+    10**-2  : "c",
+    10**-3  : "m",
+    10**-6  : "µ",
+    10**-9  : "n",
+    10**-12 : "p",
+    10**-15 : "f",
+    10**-18 : "a",
+    2**10   : "Ki",
+    2**20   : "Mi",
+    2**30   : "Gi",
+    2**40   : "Ti",
+    2**50   : "Pi",
+    2**60   : "Ei",
+    2**70   : "Zi",
+    2**80   : "Yi",
+}
+
+PREFIXOS_SI_CURTOS_REV_TEX = {
+    10**18  : "E",
+    10**15  : "P",
+    10**12  : "T",
+    10**9   : "G",
+    10**6   : "M",
+    10**3   : "k",
+    10**2   : "h",
+    10**1   : "da",
+    10**0   : "",
+    10**-1  : "d",
+    10**-2  : "c",
+    10**-3  : "m",
+    10**-6  : "\\micro",
+    10**-9  : "n",
+    10**-12 : "p",
+    10**-15 : "f",
+    10**-18 : "a",
+    2**10   : "Ki",
+    2**20   : "Mi",
+    2**30   : "Gi",
+    2**40   : "Ti",
+    2**50   : "Pi",
+    2**60   : "Ei",
+    2**70   : "Zi",
+    2**80   : "Yi",
+}
+
+PREFIXOS_SI_SIUNITX_REV = {
+    10**18  : "\\exa",
+    10**15  : "\\peta",
+    10**12  : "\\tera",
+    10**9   : "\\giga",
+    10**6   : "\\mega",
+    10**3   : "\\kilo",
+    10**2   : "\\hecto",
+    10**1   : "\\deca",
+    10**0   : "",
+    10**-1  : "\\deci",
+    10**-2  : "\\centi",
+    10**-3  : "\\milli",
+    10**-6  : "\\micro",
+    10**-9  : "\\nano",
+    10**-12 : "\\pico",
+    10**-15 : "\\femto",
+    10**-18 : "\\atto",
+    2**10   : "\\kibi",
+    2**20   : "\\mibi",
+    2**30   : "\\gibi",
+    2**40   : "\\tebi",
+    2**50   : "\\pebi",
+    2**60   : "\\exbi",
+    2**70   : "\\zebi",
+    2**80   : "\\yobi",
+}
+
 
 PREFIXOS_SI = dict(list(PREFIXOS_SI_CURTOS.items()) + list(PREFIXOS_SI_LONGOS.items()))
 
@@ -262,7 +376,7 @@ def analisa_unidades(txt):
             if c == "/":
                 mul_cte *= -1
     # Processe os tokens
-    for tok in tokens:
+    for i, tok in enumerate(tokens):
         tmp = tok[0].split(":")
         prefix = ""
         base = ""
@@ -274,14 +388,29 @@ def analisa_unidades(txt):
         else:
             raise Exception("cada token de unidade não pode ter mais do que um dois-pontos")
 
-        if prefix in PREFIXOS_SI:
-            prefix = PREFIXOS_SI[prefix]
-        else:
-            raise Exception("prefixo desconhecido em '{}'".format(tok[0]))
-        if base in TODAS_AS_UNIDADES:
-            base = TODAS_AS_UNIDADES[base]
-        else:
-            raise Exception("unidade desconhecida em '{}'".format(tok[0]))
+        try:
+            if prefix in PREFIXOS_SI:
+                prefix = PREFIXOS_SI[prefix]
+            else:
+                raise Exception("prefixo desconhecido em '{}'".format(tok[0]))
+            if base in TODAS_AS_UNIDADES:
+                u = TODAS_AS_UNIDADES[base]
+                u.nova_unidade_por_prefixo(prefix)
+            else:
+                raise Exception("unidade desconhecida em '{}'".format(tok[0]))
+        except:
+            prefix = base[0]
+            base = base[1:]
+            if prefix in PREFIXOS_SI:
+                prefix = PREFIXOS_SI[prefix]
+            else:
+                raise Exception("prefixo desconhecido em '{}'".format(tok[0]))
+            if base in TODAS_AS_UNIDADES:
+                u = TODAS_AS_UNIDADES[base]
+                u.nova_unidade_por_prefixo(prefix)
+            else:
+                raise Exception("unidade desconhecida em '{}'".format(tok[0]))
+
     ans = []
     for tok in tokens:
         # Pegue o expoente
@@ -430,10 +559,13 @@ def simplifica_unidades(la, lb_=[], inverte=False):
 
     d = {} # Dicionário Unidade-Expoente
     for u in l_unidades:
-        if u.unidade_pai in d:
-            d[u.unidade_pai] += u.expoente_pai
+        u2 = u.unidade_pai
+        if u.expoente_pai == 1 or u.expoente_pai == 0:
+            u2 = u
+        if u2 in d:
+            d[u2] += u.expoente_pai
         else:
-            d[u.unidade_pai] = u.expoente_pai
+            d[u2] = u.expoente_pai
     pos = [] # Parte com expoentes positivos
     neg = [] # Parte com expoentes negativos
     for u, e in d.items():
@@ -449,3 +581,16 @@ def simplifica_unidades(la, lb_=[], inverte=False):
     pos.sort(key=lambda u: u.simbolo)
     neg.sort(key=lambda u: u.simbolo)
     return pos+neg
+
+def sigla_prefixo(prefixo):
+    return PREFIXOS_SI_CURTOS_REV[prefixo]
+
+def nome_prefixo(prefixo):
+    return PREFIXOS_SI_LONGOS_REV[prefixo]
+
+def sigla_prefixo_latex(prefixo):
+    return PREFIXOS_SI_CURTOS_REV_TEX[prefixo]
+
+def comando_siunitx_prefixo(prefixo):
+    return PREFIXOS_SI_SIUNITX_REV[prefixo]
+

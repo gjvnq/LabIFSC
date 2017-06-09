@@ -5,8 +5,21 @@ from copy import copy
 from math import floor, log, ceil
 from .geral import acha_unidade, calcula_dimensao, analisa_numero, dimensao_em_texto, fator_de_conversao_para_si, unidades_em_texto, converte_unidades, analisa_unidades, simplifica_unidades, gera_expoente
 
-def M(*args, **kwargs):
-    return Medida(*args, **kwargs)
+def M(val, erro = 0.0, unidade = None):
+    # Talvez seja uma lista de números para converter
+    if isinstance(val, list):
+        ret = []
+        for x in val:
+            if erro != None:
+                ret.append(Medida((x, erro), unidade=unidade))
+            else:
+                ret.append(Medida(x, unidade=unidade))
+        return ret
+    # Tente o de sempre
+    try:
+        return Medida((val, erro), unidade=unidade)
+    except:
+        return Medida(val, unidade=unidade)
 
 class Medida:
     unidades_originais = [] # Tuplas (objeto unidade, expoente) na ordem em que foram entradas  
@@ -16,7 +29,10 @@ class Medida:
     si_nominal = 0.0
     si_incerteza = 0.0
 
-    def __init__(self, valor, unidade_txt=None):
+    def __init__(self, valor, unidade=None):
+        self.inicializa(valor, unidade_txt=unidade)
+
+    def inicializa(self, valor, unidade_txt=None):
         # Analise o valor
         if isinstance(valor, Medida):
             self.nominal = valor.nominal
@@ -32,7 +48,6 @@ class Medida:
                 raise Exception("não foi possível extrair o valor e a incerteza")
 
         # Veja as unidades
-        self.unidades_originais = []
         if isinstance(unidade_txt, list):
             self.unidades_originais = copy(unidade_txt)
         elif unidade_txt != None:
@@ -45,8 +60,9 @@ class Medida:
         self.si_incerteza = (self.nominal * mul_err + mul_nom * self.incerteza)  + add_err
 
     def _checa_dim(self, outro):
+        # Aplique a regra
         if self.dimensao != outro.dimensao:
-            raise ValueError("dimensões físicas incompatíveis: {} vs {}".format(dimensao_em_texto(self.dimensao), dimensao_em_texto(outro.dimensao)))
+            raise ValueError("dimensões físicas incompatíveis: {} vs {} ({} vs. {})".format(dimensao_em_texto(self.dimensao), dimensao_em_texto(outro.dimensao), self, outro))
     def _eh_medida(self, outro):
         if not isinstance(outro, Medida):
             raise TypeError("medidas só podem ser comparadas com outras medidas")
@@ -183,18 +199,19 @@ class Medida:
             nom = self_nom
             err = self_err
             # Arredonde o erro para a maior casa significativa
-            while err < 1.0:
-                n -= 1
-                err *= 10
-            while err >= 10.0:
-                n += 1
-                err /= 10
-            err = round(err)*10**n
+            if err != 0.0:
+                while err < 1.0:
+                    n -= 1
+                    err *= 10
+                while err >= 10.0:
+                    n += 1
+                    err /= 10
+                err = round(err)*10**n
             # Arredonde o valor nominal de acrodo
             if n <= 0:
                 nom = round(nom, -n)
             else:
-                nom = nom
+                nom = round(nom*10**(-n))*10**n
             # Converta para string tomando cuidado com zeros desnecessários
             if err == int(err):
                 err = str(int(err))
