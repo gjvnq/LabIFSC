@@ -5,19 +5,19 @@ from copy import copy
 from math import floor, log, ceil
 from .geral import acha_unidade, calcula_dimensao, analisa_numero, dimensao_em_texto, fator_de_conversao_para_si, unidades_em_texto, converte_unidades, analisa_unidades, simplifica_unidades, gera_expoente
 
-def M(val, erro = 0.0, unidade = None):
+def M(val, incerteza = None, unidade = None):
     # Talvez seja uma lista de números para converter
     if isinstance(val, list):
         ret = []
         for x in val:
-            if erro != None:
-                ret.append(Medida((x, erro), unidade=unidade))
-            else:
+            try:
+                ret.append(Medida((x, incerteza), unidade=unidade))
+            except:
                 ret.append(Medida(x, unidade=unidade))
         return ret
     # Tente o de sempre
     try:
-        return Medida((val, erro), unidade=unidade)
+        return Medida((val, incerteza), unidade=unidade)
     except:
         return Medida(val, unidade=unidade)
 

@@ -51,10 +51,10 @@ def test_medida_add_3():
     m2 = Medida("1+-0.1", "ft")
     m3 = m1+m2
     m4 = m2+m1
-    assert m3.nominal == 2.6096
+    assert m3.nominal == 1.3048
     assert m3.incerteza == 0.13048
     assert unidades_em_texto(m3.unidades_originais) == "m"
-    assert m4.nominal == 5.585639895013123
+    assert m4.nominal == 4.2808398950131235
     assert m4.incerteza == 0.4280839895013123
     assert unidades_em_texto(m4.unidades_originais) == "ft"
 

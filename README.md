@@ -1,11 +1,17 @@
 # LabIFSC
-Uma biblioteca em python para propagação de erro e conversão de unidades utilizando os métodos (um tanto insólitos) que os professores de lab de física do IFSC-USP insistem.
-
-**AVISO**: está biblioteca ainda não está pronta.
+Uma biblioteca para Python 2 e Python 3 para propagação de erro e conversão de unidades utilizando os métodos (um tanto insólitos) que os professores de lab de física do IFSC-USP insistem.
 
 # Instalação
 
-No momento a biblioteca não está disponível do pip, porém é possível utilizá-la simplesmente colocando a pasta ```LabIFSC``` dentro da pasta em que o seu script está. Exemplo:
+## PIP
+
+Em um terminal, basta executar o seguinte comando:
+
+```pip install LabIFSC --user```
+
+## Manualmente
+
+Caso o PIP não esteja disponível ou não funcione, é possível utilizar a LabIFSC simplesmente colocando a pasta ```LabIFSC``` dentro da pasta em que o seu script está. Exemplo:
 
 ```
 ─┬ Minha pasta qualquer
@@ -45,7 +51,7 @@ m = Medida("130±27", "m")   # Medida(valor±erro, unidade)
 m = Medida("130(27)", "m")  # Medida(valor(erro), unidade)
 ```
 
-Também podemos usar a abreviatura ```M()```, a qual funciona de forma idêntica:
+Também podemos usar a abreviatura ```M()```, a qual funciona de forma bem parecida:
 
 ```python
 m = M((130, 27), "m")  # Medida((valor nominal, erro), unidade)
@@ -55,7 +61,15 @@ m = M("130±27", "m")   # Medida(valor±erro, unidade)
 m = M("130(27)", "m")  # Medida(valor(erro), unidade)
 ```
 
-Uma instância de Medida tem os seguintes atributos:
+No entanto, ```M()``` também nos permite criar listas de medidas com facilidade:
+
+```python
+x = M([7, 15, 28, 42, 49, 61], incerteza=1, unidade="cm")
+y = M(["1", "2", "3", "4", "4", "6"], incerteza=0.01, unidade="s")
+z = M(["7+-1", "15+/-0.1", "28±10", "42(3)", 49, 61], unidade="kg", incerteza=0.01)
+```
+
+Uma instância de ```Medida``` tem os seguintes atributos:
 
 ```python
 # Lembre-se que ft é o símbolo para pés
@@ -66,7 +80,7 @@ print(m.si_nominal)   # 39.64
 print(m.si_incerteza) # 8.2296
 ```
 
-Os valores prefixados com ```si_``` estão em unidades do MKS, ou seja: metro, radiano, quilograma, segundo, kelvin, Ampère e mol. As dimensões físicas são, respectivamente: comprimento (L), ângulo (A), massa (M), tempo (T), temperatura (K), corrente (I) e "número" (N). Quando uma medida é adimensional, usa-se ∅ como mostrado no excerto abaixo:
+Os valores prefixados com ```si_``` estão em unidades do MKS, ou seja: metro, radiano, quilograma, segundo, Kelvin, Ampère e mol. As dimensões físicas são, respectivamente: comprimento (L), ângulo (A), massa (M), tempo (T), temperatura (K), corrente (I) e "número" (N). Quando uma medida é adimensional, usa-se ∅ como mostrado no excerto abaixo:
 
 ```python
 # Lembre-se que lb é o símbolo para libras/pounds
@@ -152,7 +166,9 @@ m3 = Medida("1+/-0.02", "s")
 
 (O arquivo ```LabIFSC/lista_de_unidades.py``` contém todas as unidades suportadas por esta biblioteca.)
 
-As contas de soma e subtração sempre ficam nas unidades do primeiro argumento nas operações desde que as dimensões físicas sejam iguais. No caso contrário, tem-se um erro. Já as contas de multiplicação e divisão combinam as unidades.
+As contas de soma e subtração sempre ficam nas unidades do primeiro argumento nas operações, exceto quando o primeiro argumento for adimensional. Neste caso, as unidades serão as do segundo argumento.
+
+Já as contas de multiplicação e divisão simplesmente combinam as unidades.
 
 ```python
 print(m1+m2) #  2.610±0.001 m
@@ -165,8 +181,6 @@ print(m1/m2) #  1.000±0.002 m ft⁻¹
 print(m2/m1) #  1.000±0.002 ft m⁻¹
 print(m1*m3) #  1.00±0.02 m s
 print(m1/m3) #  1.00±0.02 m s⁻¹
-
-print(m1+m3) # ValueError: dimensões físicas incompatíveis: L1 vs T1
 ```
 
 Para converter as unidades:
@@ -175,12 +189,11 @@ Para converter as unidades:
 m4 = m1*m2/m3
 print(m4.converta("m^2 s^-1")) # 1.610±0.007 m² s⁻¹
 print(m4.converta("m^2/s"))    # 1.610±0.007 m² s⁻¹
-print(m4.converta("m^2/kg"))   # ValueError: dimensões físicas incompatíveis: L2T-1 vs L2M-1
 ```
 
 ## Formatação de Números
 
-Uma mesma medida pode ser impressa de diferentes formas:
+Uma mesma ```Medida``` pode ser impressa de diferentes formas:
 
 ```python
 m1 = Medida("1.23456789+/-0.015", "m lb/s")
@@ -229,4 +242,20 @@ print("{:txt,full,-2}".format(m1))      # (123.45678899999999+/-1.5)*10^-2 m lb 
 
 ## Sequências e Tabelas
 
-## Gráficos
+Essa biblioteca provê funções para calcular média, desvio padrão e linearização de dados. Mais detalhes estão no exemplo abaixo:
+
+```python
+x = M(["147.0", "161.8", "174.6", "161.01", "175.6", "166.0"], incerteza=0.1, unidade="cm")
+print(media(x))                             # 160±10 cm
+print(media(x, incerteza="desvio padrão"))  # 160±10 cm
+print(media(x, incerteza="propagação"))     # 164.3±0.1 cm
+print(desvio_padrao(x))                     # 10.516907815513074
+
+x = M(["7", "15", "28", "42", "49", "61"], incerteza=1, unidade="cm")
+y = M(["1", "2", "3", "4", "4", "6"], incerteza=0.01, unidade="s")
+linearize(x, y, imprimir=True)
+x[1] = x[1].converta("m")
+x[2] = x[2].converta("km")
+linearize(x, y, imprimir=True)
+# Note que, mesmo com unidades diferentes, as linearizações tem o mesmo resultado
+```

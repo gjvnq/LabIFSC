@@ -5,7 +5,7 @@ import math
 from .matematica import soma, sqrt
 from copy import copy
 
-def media(x, erro="desvio padrão"):
+def media(x, incerteza="desvio padrão"):
     try:
         x = list(x)
     except:
@@ -21,20 +21,20 @@ def media(x, erro="desvio padrão"):
         avg = copy(acumulador)
         avg.inicializa("0", acumulador.unidades_originais)
     except:
-        erro = "nenhum"
+        incerteza = "nenhum"
 
     avg = copy(acumulador)
-    erro_val = 0.0
-    if erro == "nenhum":
+    incerteza_val = 0.0
+    if incerteza == "nenhum":
         return avg
-    elif erro == "desvio padrão":
-        erro_val = desvio_padrao(x)
-        avg.inicializa((acumulador.nominal, erro_val), acumulador.unidades_originais)
+    elif incerteza == "desvio padrão":
+        incerteza_val = desvio_padrao(x)
+        avg.inicializa((acumulador.nominal, incerteza_val), acumulador.unidades_originais)
         return avg
-    elif erro == "propagação":
+    elif incerteza == "propagação":
         return avg
     else:
-        raise ValueError("mecanismo de erro desconhecido: {}".format(erro))
+        raise ValueError("mecanismo de incerteza desconhecido: {}".format(incerteza))
 
 
 def desvio_padrao(x):
