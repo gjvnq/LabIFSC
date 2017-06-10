@@ -5,7 +5,7 @@ from .geral import TODAS_AS_UNIDADES, MAPA_DE_DIMENSOES, PREFIXOS_SI_LONGOS, PRE
 from .medida import Medida, M
 from .unidade import Unidade
 from .lista_de_unidades import registra_unidades
-from .matematica import cos, sin, tan, cot, sec, csc, arc_cos, arc_sin, arc_tan, log, log10, log2, ln, sqrt, cbrt
+from .matematica import soma, cos, sin, tan, cot, sec, csc, arc_cos, arc_sin, arc_tan, log, log10, log2, ln, sqrt, cbrt
 from .tabela import media, desvio_padrao, linearize, compare
 
 
@@ -14,7 +14,7 @@ __all__ = [
     "Medida", "M",
     "Unidade",
     "registra_unidades",
-    "cos", "sin", "tan", "cot", "sec", "csc", "arc_cos", "arc_sin", "arc_tan", "log", "log10", "log2", "ln", "sqrt", "cbrt",
+    "soma", "cos", "sin", "tan", "cot", "sec", "csc", "arc_cos", "arc_sin", "arc_tan", "log", "log10", "log2", "ln", "sqrt", "cbrt",
     "media", "desvio_padrao", "linearize", "compare"
 ]
 

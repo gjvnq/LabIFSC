@@ -58,13 +58,6 @@ def test_medida_add_3():
     assert m4.incerteza == 0.4280839895013123
     assert unidades_em_texto(m4.unidades_originais) == "ft"
 
-def test_medida_add_4():
-    m1 = Medida(1, "m")
-    m2 = Medida("2+/-0.1", "kg")
-    with pytest.raises(Exception) as excinfo:
-        m = m1 + m2
-    assert "dimensões físicas incompatíveis: L1 vs M1" in str(excinfo)
-
 def test_medida_sub_1():
     m1 = Medida(1, "m")
     m2 = Medida(2, "m")

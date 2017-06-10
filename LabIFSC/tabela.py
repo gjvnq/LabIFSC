@@ -2,6 +2,7 @@
 # -*- coding: utf-8 -*-
 
 import math
+from .matematica import soma, sqrt
 from copy import copy
 
 def media(x, erro="desvio padrão"):
@@ -42,20 +43,40 @@ def desvio_padrao(x):
     except:
         raise ValueError("x deve ser uma lista ou algo conversível em lista")
 
-    try:
-        avg = sum(list(map(lambda x: x.nominal, x)))/len(x)
-    except:
-        avg = sum(x)/len(x)
+    avg = soma(x)/len(x)
 
     acumulador = 0.0
     for elemento in x:
-        acumulador += (elemento.nominal - avg)**2
+        acumulador += (elemento.nominal - avg.nominal)**2
     acumulador /= max(len(x)-1, 1)
     acumulador = math.sqrt(acumulador)
     return acumulador
 
-def linearize(x, y):
-    pass
+def linearize(x, y, imprimir=False):
+    if len(x) == 0 or len(y) == 0 or len(x) != len(y):
+        raise ValueError("As listas para os valores de 'x' e 'y' tem que ser não nulas ter o mesmo tamanho.")
+    x_avg = sum(x)/len(x)
+    y_avg = sum(y)/len(y)
+
+    a = sum(list(map(lambda x, y: (x-x_avg)*y, x, y)))
+    a /= sum(list(map(lambda x: (x-x_avg)**2, x)))
+
+    b = y_avg - a * x_avg
+
+    dy = sqrt(sum(map(lambda x, y: (a*x + b - y)**2, x, y))/(len(x)-2))
+
+    da = dy/sqrt(sum(map(lambda x: (x-x_avg)**2, x)))
+
+    db = sqrt(sum(map(lambda x: x**2, x))/(len(x)*sum(map(lambda x: (x-x_avg)**2, x))))
+
+    if imprimir:
+        print("a  = {}".format(a))
+        print("b  = {}".format(b))
+        print("Δy = {}".format(dy))
+        print("Δa = {}".format(da))
+        print("Δb = {}".format(db))
+
+    return {"a": a, "b": b, "Δy": dy, "Δa": da, "Δb": db}
 
 # Compara todos os pares (xi, xj) e os retorna em três grupos de acordo com a função de igualdade e desigualdade
 def compare(x):

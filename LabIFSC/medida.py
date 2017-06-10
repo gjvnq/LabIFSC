@@ -59,7 +59,7 @@ class Medida:
         self.si_nominal = self.nominal * mul_nom + add_nom
         self.si_incerteza = (self.nominal * mul_err + mul_nom * self.incerteza)  + add_err
 
-    def _checa_dim(self, outro):
+    def checa_dim(self, outro):
         # Aplique a regra
         if self.dimensao != outro.dimensao:
             raise ValueError("dimensões físicas incompatíveis: {} vs {} ({} vs. {})".format(dimensao_em_texto(self.dimensao), dimensao_em_texto(outro.dimensao), self, outro))
@@ -71,15 +71,16 @@ class Medida:
         if not isinstance(outro, Medida):
             m = Medida(outro)
         if converter:
-            return m.converta(self.unidades_originais)
+            return m.converta(self.unidades_originais, ignore=True)
         else:
             return m
 
-    def converta(self, unidades):
+    def converta(self, unidades, ignore=False):
         if isinstance(unidades, str):
             unidades = analisa_unidades(unidades)
         m = Medida(1, unidades)
-        self._checa_dim(m)
+        if not ignore:
+            self.checa_dim(m)
         nom, err = converte_unidades(self.nominal, self.incerteza, self.unidades_originais, unidades)
         return Medida((nom, err), unidades)
 
@@ -91,22 +92,24 @@ class Medida:
 
     def __eq__(self, outro):
         self._eh_medida(outro)
-        self._checa_dim(outro)
+        self.checa_dim(outro)
         return abs(self.si_nominal - outro.si_nominal) <= 2 * (self.si_incerteza + outro.si_incerteza)
     def __ne__(self, outro):
         self._eh_medida(outro)
-        self._checa_dim(outro)
+        self.checa_dim(outro)
         return abs(self.si_nominal - outro.si_nominal) > 3 * (self.si_incerteza + outro.si_incerteza)
     def __add__(self, outro):
-        outro = self._torne_medida(outro, False)
-        self._checa_dim(outro)
+        unidades = outro.unidades_originais
         outro = self._torne_medida(outro, True)
-        return Medida((self.nominal+outro.nominal, self.incerteza+outro.incerteza), self.unidades_originais)
+        if sum(self.dimensao) != 0:
+            unidades = self.unidades_originais
+        return Medida((self.nominal+outro.nominal, self.incerteza+outro.incerteza), unidades)
     def __sub__(self, outro):
-        outro = self._torne_medida(outro, False)
-        self._checa_dim(outro)
+        unidades = outro.unidades_originais
         outro = self._torne_medida(outro, True)
-        return Medida((self.nominal-outro.nominal, self.incerteza+outro.incerteza), self.unidades_originais)
+        if sum(self.dimensao) != 0:
+            unidades = self.unidades_originais
+        return Medida((self.nominal-outro.nominal, self.incerteza+outro.incerteza), unidades)
     def __mul__(self, outro):
         outro = self._torne_medida(outro, False)
         nom = self.nominal * outro.nominal
@@ -142,7 +145,10 @@ class Medida:
         if isinstance(outro, Medida):
             raise NotImplementedError("a exponenciação entre medidas não está implementada")
         else:
-            return Medida((self.nominal**outro, outro*self.nominal**(outro-1)*self.incerteza), self.unidades_originais)
+            unidades = self.unidades_originais
+            if outro == int(outro):
+                unidades = simplifica_unidades(self.unidades_originais*outro)
+            return Medida((self.nominal**outro, outro*self.nominal**(outro-1)*self.incerteza), unidades)
     def __abs__(self):
         m = Medida((abs(self.nominal), self.incerteza), self.unidades_originais)
         return m
@@ -207,24 +213,30 @@ class Medida:
                     n += 1
                     err /= 10
                 err = round(err)*10**n
-            # Arredonde o valor nominal de acrodo
-            if n <= 0:
-                nom = round(nom, -n)
-            else:
-                nom = round(nom*10**(-n))*10**n
+                # Arredonde o valor nominal de acrodo
+                if n <= 0:
+                    nom = round(nom, -n)
+                else:
+                    nom = round(nom*10**(-n))*10**n
             # Converta para string tomando cuidado com zeros desnecessários
-            if err == int(err):
+            if err == int(err) and err != 0.0:
                 err = str(int(err))
                 nom = str(int(nom))
-            else:
+            elif err != 0.0:
                 err = "{:.6f}".format(err).rstrip('0') # Isso evita com que 0.0000001 cause problemas
+                if err[-1] == ".":
+                    err = err + "0"
                 nom = "{:.6f}".format(nom) # Isso evita com que 0.0000001 cause problemas
-            # Verifique se não faltam zeros no nominal
-            while nom.find(".") >= 0 and err.find(".") >= 0 and len(nom)-nom.find(".") < len(err)-err.find("."):
-                nom += "0"
-            # Verifique se não há zeros em excesso no nominal
-            while nom.find(".") >= 0 and err.find(".") >= 0 and len(nom)-nom.find(".") > len(err)-err.find("."):
-                nom = nom[:-1]
+            else:
+                err = "0"
+                nom = "{}".format(nom)
+            if err != 0.0:
+                # Verifique se não faltam zeros no nominal
+                while nom.find(".") >= 0 and err.find(".") >= 0 and len(nom)-nom.find(".") < len(err)-err.find("."):
+                    nom += "0"
+                # Verifique se não há zeros em excesso no nominal
+                while nom.find(".") >= 0 and err.find(".") >= 0 and len(nom)-nom.find(".") > len(err)-err.find("."):
+                    nom = nom[:-1]
         elif rouding == "full":
             nom = str(self_nom)
             err = str(self_err)

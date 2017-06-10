@@ -534,6 +534,8 @@ def unidades_em_texto(unidades, sep=" ", estilo=""):
 def converte_unidades(valor, incerteza, unidades_originais, unidades_de_destino):
     if unidades_originais == unidades_de_destino:
         return valor, incerteza
+    if len(unidades_originais) == 0 or len(unidades_de_destino) == 0:
+        return valor, incerteza
 
     fator_inicial = fator_de_conversao_para_si(unidades_originais)
     fator_final = fator_de_conversao_para_si(unidades_de_destino)
@@ -541,8 +543,8 @@ def converte_unidades(valor, incerteza, unidades_originais, unidades_de_destino)
     fator = (
         fator_inicial[0]/fator_final[0],
         (fator_inicial[0]*fator_final[1] + fator_inicial[1]*fator_final[0])/(fator_final[0])**2,
-        fator_inicial[0]+fator_final[0],
-        fator_inicial[1]+fator_final[1]
+        fator_inicial[2]+fator_final[2],
+        fator_inicial[3]+fator_final[3]
     )
     nom = valor*fator[0] + fator[2]
     err = (incerteza*fator[0] + valor*fator[1]) + fator[3]

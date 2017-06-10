@@ -6,6 +6,15 @@ from .medida import Medida
 
 __all__ = ["cos", "sin", "tan", "cot", "sec", "csc", "arc_cos", "arc_sin", "arc_tan", "log", "log10", "log2", "ln", "sqrt", "cbrt"]
 
+def soma(x):
+    try:
+        return sum(x)
+    except:
+        m = Medida(
+            (sum(list(map(lambda x: x.nominal, x))),
+            sum(list(map(lambda x: x.incerteza, x)))), x[0].unidades_originais)
+        return m
+
 def torna_medida(x):
     if not isinstance(x, Medida):
         return Medida(x)

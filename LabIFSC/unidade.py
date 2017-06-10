@@ -65,7 +65,7 @@ class Unidade:
             return TODAS_AS_UNIDADES[self.simbolo+gera_expoente(e)]
         if self.nome+"^"+str(e) in TODAS_AS_UNIDADES:
             return TODAS_AS_UNIDADES[self.nome+"^"+str(e)]
-        if self != self.unidade_pai:
+        if self != self.unidade_pai and self.expoente_pai != 1:
             return self.unidade_pai.nova_unidade_por_expoente(self.expoente_pai*e)
 
         # Decida como será o símbolo para o siunitx
