@@ -74,7 +74,6 @@ z = M(["7+-1", "15+/-0.1", "28±10", "42(3)", 49, 61], unidade="kg", incerteza=0
 Uma instância de ```Medida``` tem os seguintes atributos:
 
 ```python
-# Lembre-se que ft é o símbolo para pés
 m = Medida("130±27", "ft")
 print(m.nominal)      # 130.0
 print(m.incerteza)    # 27.0
@@ -173,6 +172,7 @@ As contas de soma e subtração sempre ficam nas unidades do primeiro argumento 
 Já as contas de multiplicação e divisão simplesmente combinam as unidades.
 
 ```python
+# Lembre-se que ft é o símbolo para pés
 print(m1+m2) #  2.610±0.001 m
 print(m2+m1) #  5.586±0.004 ft
 print(m1-m2) # -0.610±0.001 m
