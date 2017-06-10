@@ -30,6 +30,8 @@ Caso o PIP não esteja disponível ou não funcione, é possível utilizar a Lab
   └─ unidade.py
 ```
 
+[Link de download](https://github.com/gjvnq/LabIFSC/archive/v0.1.1.zip)
+
 # Uso
 
 ## O Básico
