@@ -7,7 +7,7 @@ Uma biblioteca para Python 2 e Python 3 para propagação de erro e conversão d
 
 Em um terminal, basta executar o seguinte comando:
 
-```pip install LabIFSC --user```
+```pip install -U LabIFSC --user```
 
 ## Manualmente
 
