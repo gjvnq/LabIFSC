@@ -3,7 +3,7 @@
 
 from copy import copy
 from math import floor, log, ceil
-from .geral import acha_unidade, calcula_dimensao, analisa_numero, dimensao_em_texto, fator_de_conversao_para_si, unidades_em_texto, converte_unidades, analisa_unidades, simplifica_unidades, gera_expoente
+from .geral import acha_unidade, calcula_dimensao, analisa_numero, dimensao_em_texto, fator_de_conversao_para_si, unidades_em_texto, converte_unidades, analisa_unidades, simplifica_unidades, gera_expoente, adimensional, get_unidades
 
 def M(val, incerteza = None, unidade = None):
     # Talvez seja uma lista de números para converter
@@ -99,17 +99,19 @@ class Medida:
         self.checa_dim(outro)
         return abs(self.si_nominal - outro.si_nominal) > 3 * (self.si_incerteza + outro.si_incerteza)
     def __add__(self, outro):
-        unidades = outro.unidades_originais
+        unidades = get_unidades(outro)
         outro = self._torne_medida(outro, True)
-        if sum(self.dimensao) != 0:
+        if not adimensional(self):
             unidades = self.unidades_originais
-        return Medida((self.nominal+outro.nominal, self.incerteza+outro.incerteza), unidades)
+        m = Medida((self.nominal+outro.nominal, self.incerteza+outro.incerteza), unidades)
+        return m
     def __sub__(self, outro):
-        unidades = outro.unidades_originais
+        unidades = get_unidades(outro)
         outro = self._torne_medida(outro, True)
-        if sum(self.dimensao) != 0:
+        if not adimensional(self):
             unidades = self.unidades_originais
-        return Medida((self.nominal-outro.nominal, self.incerteza+outro.incerteza), unidades)
+        m = Medida((self.nominal-outro.nominal, self.incerteza+outro.incerteza), unidades)
+        return m
     def __mul__(self, outro):
         outro = self._torne_medida(outro, False)
         nom = self.nominal * outro.nominal

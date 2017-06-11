@@ -543,7 +543,7 @@ def converte_unidades(valor, incerteza, unidades_originais, unidades_de_destino)
     fator = (
         fator_inicial[0]/fator_final[0],
         (fator_inicial[0]*fator_final[1] + fator_inicial[1]*fator_final[0])/(fator_final[0])**2,
-        fator_inicial[2]+fator_final[2],
+        fator_inicial[2]-fator_final[2],
         fator_inicial[3]+fator_final[3]
     )
     nom = valor*fator[0] + fator[2]
@@ -596,3 +596,17 @@ def sigla_prefixo_latex(prefixo):
 def comando_siunitx_prefixo(prefixo):
     return PREFIXOS_SI_SIUNITX_REV[prefixo]
 
+def adimensional(dims):
+    try:
+        for x in dims:
+            if x != 0:
+                return False
+        return True
+    except:
+        return adimensional(dims.unidades_originais)
+
+def get_unidades(m):
+    try:
+        return m.unidades_originais
+    except:
+        return []
