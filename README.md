@@ -1,6 +1,18 @@
 # LabIFSC
 Uma biblioteca para Python 2 e Python 3 para propagação de erro e conversão de unidades utilizando os métodos (um tanto insólitos) que os professores de lab de física do IFSC-USP insistem.
 
+# Sumário
+1. [Instalação](#instalação)
+    1. [PIP](#pip)
+    2. [Manualmente](#manualmente)
+2. [Uso](#uso)
+    1. [O Básico](#o-básico)
+    2. [Comparações](#comparações)
+    3. [Propagação de Erro](#propagação-de-erro)
+    4. [Unidades](#unidades)
+    5. [Formatação de Números](#formatação-de-números)
+    6. [Sequências e Tabelas](#sequências-e-tabelas)
+
 # Instalação
 
 ## PIP
