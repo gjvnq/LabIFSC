@@ -22,3 +22,5 @@ test.py
 demo.py
 .pypirc
 dist/
+build/
+sdist/
