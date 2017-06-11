@@ -94,6 +94,7 @@ def registra_unidades():
     Unidade("quilate", "ct", "ct", "M1", Medida(200E-3), Medida(0))
     Unidade("Dalton", "Da", "Da", "M1", Medida("1.660538921(73)×10^−27"), Medida(0))
     Unidade("elétron-Volt", "eV", "eV", "M1", Medida("1.78266184(45)×10^−36"), Medida(0))
+    Unidade("grama", "g", "g", "M1", Medida(1E-3), Medida(0))
     Unidade("quilograma", "kg", "kg", "M1", Medida(1), Medida(0))
     Unidade("onça americana nutricional", "oz", "oz", "M1", Medida(28E-3), Medida(0))
     Unidade("libra", "lb", "lb", "M1", Medida(0.45359237), Medida(0))
