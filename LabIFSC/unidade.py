@@ -23,7 +23,7 @@ class Unidade:
         self.simbolo_latex = str(simbolo_latex)
 
         if simbolo_siunitx is None or simbolo_siunitx == "":
-            self.simbolo_siunitx = str(simbolo_latex)
+            self.simbolo_siunitx = " "+str(simbolo_latex)
         else:
             self.simbolo_siunitx = str(simbolo_siunitx)
 
@@ -72,7 +72,9 @@ class Unidade:
         simbolo_siunitx = ""
         if self.simbolo_siunitx != "":
             simbolo_siunitx = self.simbolo_siunitx
-            if abs(e) == 2:
+            if abs(e) == 1:
+                simbolo_siunitx += ""
+            elif abs(e) == 2:
                 simbolo_siunitx += "\\squared"
             elif abs(e) == 3:
                 simbolo_siunitx += "\\cubed"

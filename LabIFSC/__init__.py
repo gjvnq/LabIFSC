@@ -1,6 +1,13 @@
 #!/usr/bin/env python
 # -*- coding: utf-8 -*-
 
+__author__ = "Gabriel Queiroz"
+__credits__ = ["gabriel Queiroz", "Pedro Ilídio"]
+__license__ = "GPL"
+__version__ = "0.1.4"
+__email__ = "gabrieljvnq@gmail.com"
+__status__ = "Production"
+
 from .geral import TODAS_AS_UNIDADES, MAPA_DE_DIMENSOES, PREFIXOS_SI_LONGOS, PREFIXOS_SI_CURTOS, PREFIXOS_SI, analisa_numero, analisa_unidades, calcula_dimensao, parse_dimensions, acha_unidade, unidades_em_texto
 from .medida import Medida, M
 from .unidade import Unidade
