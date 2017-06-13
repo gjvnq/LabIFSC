@@ -17,9 +17,10 @@ Uma biblioteca para Python 2 e Python 3 para propagação de erro e conversão d
 
 ## PIP
 
-Em um terminal, basta executar o seguinte comando:
+Em um terminal, basta executar um dos seguintes comandos:
 
-```pip install -U LabIFSC --user```
+```pip2 install -U LabIFSC --user``` (para quem usa Python 2)
+```pip3 install -U LabIFSC --user``` (para quem usa Python 3)
 
 ## Manualmente
 
@@ -42,7 +43,7 @@ Caso o PIP não esteja disponível ou não funcione, é possível utilizar a Lab
   └─ unidade.py
 ```
 
-[Link de download](https://github.com/gjvnq/LabIFSC/archive/v0.1.1.zip)
+[Link de download](https://github.com/gjvnq/LabIFSC/archive/stable.zip)
 
 # Uso
 
