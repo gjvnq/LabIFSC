@@ -24,7 +24,7 @@ Em um terminal, basta executar um dos seguintes comandos:
 
 ## Manualmente
 
-Caso o PIP não esteja disponível ou não funcione, é possível utilizar a LabIFSC simplesmente colocando a pasta ```LabIFSC``` dentro da pasta em que o seu script está. Exemplo:
+Caso o PIP não esteja disponível ou não funcione, é possível utilizar a LabIFSC simplesmente colocando a pasta [```LabIFSC```](https://github.com/gjvnq/LabIFSC/archive/master.zip) dentro da pasta em que o seu script está. Exemplo:
 
 ```
 ─┬ Minha pasta qualquer
@@ -43,7 +43,8 @@ Caso o PIP não esteja disponível ou não funcione, é possível utilizar a Lab
   └─ unidade.py
 ```
 
-[Link de download](https://github.com/gjvnq/LabIFSC/archive/stable.zip)
+[Download da Última Versão (.zip)](https://github.com/gjvnq/LabIFSC/archive/master.zip)
+[Lista de Todas as Versões](https://github.com/gjvnq/LabIFSC/releases)
 
 # Uso
 
