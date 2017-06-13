@@ -17,7 +17,7 @@ Uma biblioteca para Python 2 e Python 3 para propagação de erro e conversão d
 
 ## PIP
 
-Em um terminal, basta executar um dos seguintes comandos:
+Em um terminal, basta executar um dos seguintes comandos para instalar ou atualizar a LibIFSC:
 
 ```pip2 install -U LabIFSC --user``` (para quem usa Python 2)
 
