@@ -69,14 +69,24 @@ def linearize(x, y, imprimir=False):
 
     db = sqrt(sum(map(lambda x: x**2, x))/(len(x)*sum(map(lambda x: (x-x_avg)**2, x))))
 
+    r2 = sum(map(lambda x, y: (a*x + b - y)**2, x, y))
+
+    # Remova os erros
+    a.incerteza, a.si_incerteza = 0.0, 0.0
+    b.incerteza, b.si_incerteza = 0.0, 0.0
+    da.incerteza, da.si_incerteza = 0.0, 0.0
+    dy.incerteza, dy.si_incerteza = 0.0, 0.0
+    r2.incerteza, dy.si_incerteza = 0.0, 0.0
+
     if imprimir:
         print("a  = {}".format(a))
         print("b  = {}".format(b))
         print("Δy = {}".format(dy))
         print("Δa = {}".format(da))
         print("Δb = {}".format(db))
+        print("r² = {}".format(r2))
 
-    return {"a": a, "b": b, "Δy": dy, "Δa": da, "Δb": db}
+    return {"a": a, "b": b, "Δy": dy, "Δa": da, "Δb": db, "R²": r2}
 
 # Compara todos os pares (xi, xj) e os retorna em três grupos de acordo com a função de igualdade e desigualdade
 def compare(x):

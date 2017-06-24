@@ -179,6 +179,18 @@ class Medida:
             outro**self.nominal * log(outro) * self.incerteza))
     def __rdiv__(self, outro):
         return Medida(outro).__div__(self)
+    def __lt__(self, outro):
+        outro = self._torne_medida(outro, False)
+        return self.nominal < outro.nominal
+    def __le__(self, outro):
+        outro = self._torne_medida(outro, False)
+        return self.nominal <= outro.nominal
+    def __gt__(self, outro):
+        outro = self._torne_medida(outro, False)
+        return self.nominal > outro.nominal
+    def __ge__(self, outro):
+        outro = self._torne_medida(outro, False)
+        return self.nominal >= outro.nominal
 
     def __format__(self, fmt):
         fmt = fmt.split(",")

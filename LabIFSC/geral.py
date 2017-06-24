@@ -341,6 +341,9 @@ def analisa_numero_forma_concisa(txt):
 # Se houverem prefixos incomuns, usa-se dois-pontos (:):
 # Ex: "kilo:T", "k:T", "quilo:Tesla" | "kilo:byte", "k:byte", "kb" (base 10) | "kibi:byte", "ki:byte" (base 2)
 def analisa_unidades(txt):
+    if txt == u"∅":
+        return (0, 0, 0, 0, 0, 0, 0)
+
     txt = txt.replace(" ", "*").replace("**", "*").replace("^", "")+"*Z0"
     if len(txt.split("/")) > 2:
         raise Exception("apenas uma barra (/) pode ser utilizada ao especificar uma unidade. Após a barra todos os expoentes são multiplicados por -1")
@@ -515,6 +518,8 @@ def unidades_em_texto(unidades, sep=" ", estilo=""):
     txt = ""
     first = True
     per = False
+    if len(unidades) == 0:
+        return u"∅"
     for unidade in unidades:
         if first == False:
             txt += sep

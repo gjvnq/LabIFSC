@@ -14,6 +14,7 @@ from .unidade import Unidade
 from .lista_de_unidades import registra_unidades
 from .matematica import soma, cos, sin, tan, cot, sec, csc, arc_cos, arc_sin, arc_tan, log, log10, log2, ln, sqrt, cbrt
 from .tabela import media, desvio_padrao, linearize, compare
+from .grafico import plote
 
 
 __all__ = [
@@ -22,7 +23,8 @@ __all__ = [
     "Unidade",
     "registra_unidades",
     "soma", "cos", "sin", "tan", "cot", "sec", "csc", "arc_cos", "arc_sin", "arc_tan", "log", "log10", "log2", "ln", "sqrt", "cbrt",
-    "media", "desvio_padrao", "linearize", "compare"
+    "media", "desvio_padrao", "linearize", "compare",
+    "plote"
 ]
 
 def init():
