@@ -5,7 +5,7 @@ from copy import copy
 from math import floor, log, ceil
 from .geral import acha_unidade, calcula_dimensao, analisa_numero, dimensao_em_texto, fator_de_conversao_para_si, unidades_em_texto, converte_unidades, analisa_unidades, simplifica_unidades, gera_expoente, adimensional, get_unidades
 
-def M(val, incerteza = None, unidade = None):
+def M(val, unidade = None, incerteza = None):
     # Talvez seja uma lista de números para converter
     if isinstance(val, list):
         ret = []
@@ -255,7 +255,14 @@ class Medida:
             nom = str(self_nom)
             err = str(self_err)
         else:
-            raise ValueError("{} não é um parâmetro válido de arredondamento".format(rouding))
+            try:
+                self_nom /= exp
+                self_err /= exp
+            except:
+                pass
+            nom = ("{:"+rouding+"}").format(self_nom)
+            err = ("{:"+rouding+"}").format(self_err)
+            # raise ValueError("{} não é um parâmetro válido de arredondamento".format(rouding))
         sep = "±"
         uni = unidades_em_texto(self.unidades_originais)
         if modo == "latex":

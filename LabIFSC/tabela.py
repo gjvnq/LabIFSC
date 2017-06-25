@@ -69,7 +69,10 @@ def linearize(x, y, imprimir=False):
 
     db = sqrt(sum(map(lambda x: x**2, x))/(len(x)*sum(map(lambda x: (x-x_avg)**2, x))))
 
-    r2 = sum(map(lambda x, y: (a*x + b - y)**2, x, y))
+    ss_res = sum(map(lambda x, y: (a*x + b - y)**2, x, y))
+    ss_tot = sum(map(lambda y: (y-y_avg)**2, y))
+
+    r2 = 1 - ss_res/ss_tot
 
     # Remova os erros
     a.incerteza, a.si_incerteza = 0.0, 0.0

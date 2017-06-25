@@ -19,7 +19,6 @@ def ajusta_unidade(val, unidade_ref):
     return val, unidade_ref
 
 def plote(linhas=[], arquivo="plot.pdf", titulo_x="", titulo_y="", titulo="", lgd_y_hack=-0.25, lgd_ncol=2, tamanho_horizontal=20, tamanho_vertical=15):
-    print(linhas)
     try:
         import matplotlib.pyplot as plt
     except:
