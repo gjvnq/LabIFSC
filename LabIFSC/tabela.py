@@ -74,22 +74,21 @@ def linearize(x, y, imprimir=False):
 
     r2 = 1 - ss_res/ss_tot
 
-    # Remova os erros
-    a.incerteza, a.si_incerteza = 0.0, 0.0
-    b.incerteza, b.si_incerteza = 0.0, 0.0
-    da.incerteza, da.si_incerteza = 0.0, 0.0
+    # Acerte os erros
+    a.inicializa((a.nominal, da), unidade_txt=a.unidades_originais)
+    b.inicializa((b.nominal, db), unidade_txt=b.unidades_originais)
     dy.incerteza, dy.si_incerteza = 0.0, 0.0
-    r2.incerteza, dy.si_incerteza = 0.0, 0.0
+    r2.incerteza, r2.si_incerteza = 0.0, 0.0
 
     if imprimir:
         print("a  = {}".format(a))
         print("b  = {}".format(b))
         print("Δy = {}".format(dy))
-        print("Δa = {}".format(da))
-        print("Δb = {}".format(db))
+        # print("Δa = {}".format(da))
+        # print("Δb = {}".format(db))
         print("r² = {}".format(r2))
 
-    return {"a": a, "b": b, "Δy": dy, "Δa": da, "Δb": db, "R²": r2}
+    return {"a": a, "b": b, "Δy": dy, "R²": r2}
 
 # Compara todos os pares (xi, xj) e os retorna em três grupos de acordo com a função de igualdade e desigualdade
 def compare(x):
