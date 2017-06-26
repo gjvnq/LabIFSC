@@ -5,20 +5,20 @@ from .geral import unidades_em_texto
 
 def ajusta_unidade(val, unidade_ref):
     try:
-        if unidade_ref == u"∅":
-            unidade_ref = unidades_em_texto(val.unidades_originais)
+        if unidade_ref[0] == u"∅":
+            unidade_ref = [unidades_em_texto(val.unidades_originais)]
     except AttributeError:
         pass
-    if unidade_ref != u"∅":
+    if unidade_ref[0] != u"∅":
         try:
             val = val.converta(unidade_ref)
         except AttributeError:
             pass
         except:
             raise Exception("falha ao converter unidades de {} em {}".format(val.__repr__(), unidade_ref))
-    return val, unidade_ref
+    return val, unidade_ref[0]
 
-def plote(linhas=[], arquivo="plot.pdf", titulo_x="", titulo_y="", titulo="", lgd_y_hack=-0.25, lgd_ncol=2, tamanho_horizontal=20, tamanho_vertical=15):
+def plote(linhas=[], arquivo="plot.pdf", titulo_x="", titulo_y="", titulo_y2="", titulo="", lgd_y_hack=-0.25, lgd_ncol=2, tamanho_horizontal=20, tamanho_vertical=15, cor_x="black", cor_y="black", cor_y2="black"):
     try:
         import matplotlib.pyplot as plt
     except:
@@ -26,21 +26,30 @@ def plote(linhas=[], arquivo="plot.pdf", titulo_x="", titulo_y="", titulo="", lg
 
     # Prepare o básico
     fig = plt.figure()
-    ax = fig.add_subplot(111)
+    ax_line_left  = fig.add_subplot(111)
+    ax_line_right = ax_line_left.twinx()
 
-    # Cuidados com unidades
-    unidade_x = u"∅"
-    unidade_y_esquerda = u"∅"
-    unidade_y_direita = u"∅"
+    # Cuidados com unidades | listast para editar por referência
+    unidade_x = [u"∅"]
+    unidade_y_esquerda = [u"∅"]
+    unidade_y_direita = [u"∅"]
 
     # Plote cada um dos gráficos de linha
     for l in linhas:
-        x, y = l["x"], l["y"]
+        try:
+            x, y = l["x"], l["y"]
+            ax = ax_line_left
+            unidade_y = unidade_y_esquerda
+        except:
+            x, y = l["x"], l["y2"]
+            ax = ax_line_right
+            unidade_y = unidade_y_direita
         xerr, yerr = [], []
         max_x = float("-inf")
         min_x = float("+inf")
         legenda = ""
         tipo = ""
+        cor = None
         linearize_flag = False
         media_flag = False
         if "nome" in l:
@@ -51,13 +60,15 @@ def plote(linhas=[], arquivo="plot.pdf", titulo_x="", titulo_y="", titulo="", lg
             linearize_flag = l["linearize"]
         if "média" in l:
             media_flag = l["média"]
+        if "cor" in l:
+            cor = l["cor"]
 
         # Converta as unidades por precaução e anote os erros
         for i in range(len(x)):
             max_x = max(x[i], max_x)
             min_x = min(x[i], min_x)
-            x[i], unidade_x = ajusta_unidade(x[i], unidade_x)
-            y[i], unidade_y_esquerda = ajusta_unidade(y[i], unidade_y_esquerda)
+            x[i], unidade_x[0] = ajusta_unidade(x[i], unidade_x)
+            y[i], unidade_y[0] = ajusta_unidade(y[i], unidade_y)
             try:
                 xerr.append(x[i].incerteza)
             except:
@@ -72,7 +83,7 @@ def plote(linhas=[], arquivo="plot.pdf", titulo_x="", titulo_y="", titulo="", lg
                 label=legenda)
         else:    
             ax.errorbar(
-                x, y, marker="o", linestyle="--",
+                x, y, marker="o", linestyle="--", color=cor,
                 xerr=xerr, yerr=yerr, elinewidth=1, capsize=3,
                 label=legenda)
 
@@ -97,40 +108,64 @@ def plote(linhas=[], arquivo="plot.pdf", titulo_x="", titulo_y="", titulo="", lg
                 label="(Média) "+legenda)
 
     # Arrume os títulos
-    if unidade_x != u"∅":
+    if unidade_x[0] != u"∅":
         if titulo_x == "":
             titulo_x = "{}".format(
-                unidade_x)
+                unidade_x[0])
         else:
             titulo_x = "{} ({})".format(
                 titulo_x,
-                unidade_x)
-    if unidade_y_esquerda != u"∅":
+                unidade_x[0])
+    if unidade_y_esquerda[0] != u"∅":
         if titulo_y == "":
             titulo_y = "{}".format(
-                unidade_y_esquerda)
+                unidade_y_esquerda[0])
         else:
             titulo_y = "{} ({})".format(
                 titulo_y,
-                unidade_y_esquerda)
+                unidade_y_esquerda[0])
+    if unidade_y_direita[0] != u"∅":
+        if titulo_y2 == "":
+            titulo_y2 = "{}".format(
+                unidade_y_direita[0])
+        else:
+            titulo_y2 = "{} ({})".format(
+                titulo_y2,
+                unidade_y_direita[0])
 
     # Coloque os títulos
-    ax.set_title(titulo)
-    ax.set_xlabel(titulo_x)
-    ax.set_ylabel(titulo_y)
+    ax_line_left.set_title(titulo)
+    ax_line_left.set_xlabel(titulo_x, color=cor_x)
+    ax_line_left.set_ylabel(titulo_y, color=cor_y)
+    ax_line_right.set_ylabel(titulo_y2, color=cor_y2)
 
     # Retire as barras de erro das legendas
-    handles, labels = ax.get_legend_handles_labels()
-    handles_old = handles
-    handles = []
-    for h in handles_old:
+    handles_left, labels_left = ax_line_left.get_legend_handles_labels()
+    handles_left_old = handles_left
+    handles_left = []
+    for h in handles_left_old:
         try:
-            handles.append(h[0])
+            handles_left.append(h[0])
         except:
-            handles.append(h)
+            handles_left.append(h)
+    handles_right, labels_right = ax_line_right.get_legend_handles_labels()
+    handles_right_old = handles_right
+    handles_right = []
+    for h in handles_right_old:
+        try:
+            handles_right.append(h[0])
+        except:
+            handles_right.append(h)
 
     # Toques finais e salve
     fig.set_size_inches(tamanho_horizontal/2.54, tamanho_vertical/2.54)
     plt.grid(True)
-    lgd = plt.legend(handles, labels, loc='lower center', bbox_to_anchor=(0.5, lgd_y_hack), ncol=lgd_ncol)
-    fig.savefig(arquivo, bbox_extra_artists=(lgd,), bbox_inches='tight')
+    extra_artists = []
+    lgd_left = plt.legend(handles_left, labels_left, loc='lower left', bbox_to_anchor=(0.5, lgd_y_hack), ncol=lgd_ncol)
+    lgd_right = plt.legend(handles_right, labels_right, loc='lower right', bbox_to_anchor=(0.5, lgd_y_hack), ncol=lgd_ncol)
+    if len(lgd_left.get_texts()) > 0:
+        extra_artists.append(lgd_left)
+    if len(lgd_right.get_texts()) > 0:
+        extra_artists.append(lgd_right)
+    fig.savefig(arquivo+".pdf", bbox_extra_artists=tuple(extra_artists), bbox_inches='tight')
+    fig.savefig(arquivo+".png", bbox_extra_artists=tuple(extra_artists), bbox_inches='tight', dpi=300)
