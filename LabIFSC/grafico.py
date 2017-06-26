@@ -18,7 +18,7 @@ def ajusta_unidade(val, unidade_ref):
             raise Exception("falha ao converter unidades de {} em {}".format(val.__repr__(), unidade_ref))
     return val, unidade_ref[0]
 
-def plote(linhas=[], arquivo="plot.pdf", titulo_x="", titulo_y="", titulo_y2="", titulo="", lgd_y_hack=-0.25, lgd_ncol=2, tamanho_horizontal=20, tamanho_vertical=15, cor_x="black", cor_y="black", cor_y2="black"):
+def plote(linhas=[], arquivo="plot.pdf", titulo_x="", titulo_y="", titulo_y2="", titulo="", lgd_y_hack=-0.25, lgd_ncol=2, tamanho_horizontal=20, tamanho_vertical=15, cor_x="black", cor_y="black", cor_y2="black", min_x=None, max_x=None, min_y=None, max_y=None, min_y2=None, max_y2=None):
     try:
         import matplotlib.pyplot as plt
     except:
@@ -26,6 +26,7 @@ def plote(linhas=[], arquivo="plot.pdf", titulo_x="", titulo_y="", titulo_y2="",
 
     # Prepare o básico
     fig = plt.figure()
+    plt.grid(True)
     ax_line_left  = fig.add_subplot(111)
     ax_line_right = ax_line_left.twinx()
 
@@ -45,8 +46,8 @@ def plote(linhas=[], arquivo="plot.pdf", titulo_x="", titulo_y="", titulo_y2="",
             ax = ax_line_right
             unidade_y = unidade_y_direita
         xerr, yerr = [], []
-        max_x = float("-inf")
-        min_x = float("+inf")
+        tmp_max_x = float("-inf")
+        tmp_min_x = float("+inf")
         legenda = ""
         tipo = ""
         cor = None
@@ -65,8 +66,8 @@ def plote(linhas=[], arquivo="plot.pdf", titulo_x="", titulo_y="", titulo_y2="",
 
         # Converta as unidades por precaução e anote os erros
         for i in range(len(x)):
-            max_x = max(x[i], max_x)
-            min_x = min(x[i], min_x)
+            tmp_max_x = max(x[i], tmp_max_x)
+            tmp_min_x = min(x[i], tmp_min_x)
             x[i], unidade_x[0] = ajusta_unidade(x[i], unidade_x)
             y[i], unidade_y[0] = ajusta_unidade(y[i], unidade_y)
             try:
@@ -92,8 +93,8 @@ def plote(linhas=[], arquivo="plot.pdf", titulo_x="", titulo_y="", titulo_y2="",
             a = lin["a"]
             b = lin["b"]
             r2 = lin["R²"]
-            lin_x = [min_x, max_x]
-            lin_y = [a*min_x+b, a*max_x+b]
+            lin_x = [tmp_min_x, tmp_max_x]
+            lin_y = [a*tmp_min_x+b, a*tmp_max_x+b]
             ax.errorbar(
                 lin_x, lin_y,
                 label="(Linearização) "+legenda+" R² = {:.3f}".format(r2.nominal))
@@ -139,6 +140,28 @@ def plote(linhas=[], arquivo="plot.pdf", titulo_x="", titulo_y="", titulo_y2="",
     ax_line_left.set_ylabel(titulo_y, color=cor_y)
     ax_line_right.set_ylabel(titulo_y2, color=cor_y2)
 
+    # Arrume os limites
+    ax_line_left.set_xlim(xmin=min_x, xmax=max_x)
+    ax_line_right.set_xlim(xmin=min_x, xmax=max_x)
+    ax_line_left.set_ylim(ymin=min_y, ymax=max_y)
+    ax_line_left.set_ylim(ymin=min_y, ymax=max_y)
+    ax_line_right.set_ylim(ymin=min_y2, ymax=max_y2)
+    ax_line_right.set_ylim(ymin=min_y2, ymax=max_y2)
+    # if min_x is not None:
+    #     ax_line_left.set_xlim(xmin=min_x)
+    #     ax_line_right.set_xlim(xmin=min_x)
+    # if max_x is not None:
+    #     ax_line_left.set_xlim(xmax=max_x)
+    #     ax_line_right.set_xlim(xmax=max_x)
+    # if min_y is not None:
+    #     ax_line_left.set_ylim(ymin=min_y)
+    # if max_y is not None:
+    #     ax_line_left.set_ylim(ymax=max_y)
+    # if min_y2 is not None:
+    #     ax_line_right.set_ylim(ymin=min_y2)
+    # if max_y2 is not None:
+    #     ax_line_right.set_ylim(ymax=max_y2)
+
     # Retire as barras de erro das legendas
     handles_left, labels_left = ax_line_left.get_legend_handles_labels()
     handles_left_old = handles_left
@@ -159,7 +182,6 @@ def plote(linhas=[], arquivo="plot.pdf", titulo_x="", titulo_y="", titulo_y2="",
 
     # Toques finais e salve
     fig.set_size_inches(tamanho_horizontal/2.54, tamanho_vertical/2.54)
-    plt.grid(True)
     extra_artists = []
     lgd_left = plt.legend(handles_left, labels_left, loc='lower left', bbox_to_anchor=(0.5, lgd_y_hack), ncol=lgd_ncol)
     lgd_right = plt.legend(handles_right, labels_right, loc='lower right', bbox_to_anchor=(0.5, lgd_y_hack), ncol=lgd_ncol)
