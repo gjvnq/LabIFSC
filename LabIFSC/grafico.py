@@ -1,4 +1,5 @@
 #!/usr/bin/env python
+# encoding: utf-8
 
 from .tabela import linearize, media
 from .geral import unidades_em_texto
@@ -18,7 +19,7 @@ def ajusta_unidade(val, unidade_ref):
             raise Exception("falha ao converter unidades de {} em {}".format(val.__repr__(), unidade_ref))
     return val, unidade_ref[0]
 
-def plote(linhas=[], arquivo="plot.pdf", titulo_x="", titulo_y="", titulo_y2="", titulo="", lgd_y_hack=-0.25, lgd_ncol=2, tamanho_horizontal=20, tamanho_vertical=15, cor_x="black", cor_y="black", cor_y2="black", min_x=None, max_x=None, min_y=None, max_y=None, min_y2=None, max_y2=None):
+def plote(linhas=[], arquivo="plot.pdf", titulo_x="", titulo_y="", titulo_y2="", titulo="", lgd_y_hack=-0.25, lgd_ncol=2, tamanho_horizontal=20, tamanho_vertical=15, cor_x="black", cor_y="black", cor_y2="black", min_x=None, max_x=None, min_y=None, max_y=None, min_y2=None, max_y2=None, no_lgd=False):
     try:
         import matplotlib.pyplot as plt
     except:
@@ -29,6 +30,7 @@ def plote(linhas=[], arquivo="plot.pdf", titulo_x="", titulo_y="", titulo_y2="",
     plt.grid(True)
     ax_line_left  = fig.add_subplot(111)
     ax_line_right = ax_line_left.twinx()
+    ax_line_right_used = False
 
     # Cuidados com unidades | listast para editar por referência
     unidade_x = [u"∅"]
@@ -45,6 +47,7 @@ def plote(linhas=[], arquivo="plot.pdf", titulo_x="", titulo_y="", titulo_y2="",
             x, y = l["x"], l["y2"]
             ax = ax_line_right
             unidade_y = unidade_y_direita
+            ax_line_right_used = True
         xerr, yerr = [], []
         tmp_max_x = float("-inf")
         tmp_min_x = float("+inf")
@@ -171,23 +174,28 @@ def plote(linhas=[], arquivo="plot.pdf", titulo_x="", titulo_y="", titulo_y2="",
             handles_left.append(h[0])
         except:
             handles_left.append(h)
-    handles_right, labels_right = ax_line_right.get_legend_handles_labels()
-    handles_right_old = handles_right
-    handles_right = []
-    for h in handles_right_old:
-        try:
-            handles_right.append(h[0])
-        except:
-            handles_right.append(h)
+    if ax_line_right_used:
+        handles_right, labels_right = ax_line_right.get_legend_handles_labels()
+        handles_right_old = handles_right
+        handles_right = []
+        for h in handles_right_old:
+            try:
+                handles_right.append(h[0])
+            except:
+                handles_right.append(h)
+    else:
+        ax_line_right.remove()
 
     # Toques finais e salve
     fig.set_size_inches(tamanho_horizontal/2.54, tamanho_vertical/2.54)
     extra_artists = []
-    lgd_left = plt.legend(handles_left, labels_left, loc='lower left', bbox_to_anchor=(0.5, lgd_y_hack), ncol=lgd_ncol)
-    lgd_right = plt.legend(handles_right, labels_right, loc='lower right', bbox_to_anchor=(0.5, lgd_y_hack), ncol=lgd_ncol)
-    if len(lgd_left.get_texts()) > 0:
-        extra_artists.append(lgd_left)
-    if len(lgd_right.get_texts()) > 0:
-        extra_artists.append(lgd_right)
+    if no_lgd == False:
+        lgd_left = plt.legend(handles_left, labels_left, loc='lower left', bbox_to_anchor=(0.5, lgd_y_hack), ncol=lgd_ncol)
+        if len(lgd_left.get_texts()) > 0:
+            extra_artists.append(lgd_left)
+        if ax_line_right_used:
+            lgd_right = plt.legend(handles_right, labels_right, loc='lower right', bbox_to_anchor=(0.5,     lgd_y_hack), ncol=lgd_ncol)
+            if len(lgd_right.get_texts()) > 0:
+                extra_artists.append(lgd_right)
     fig.savefig(arquivo+".pdf", bbox_extra_artists=tuple(extra_artists), bbox_inches='tight')
     fig.savefig(arquivo+".png", bbox_extra_artists=tuple(extra_artists), bbox_inches='tight', dpi=300)

@@ -147,9 +147,10 @@ class Medida:
         if isinstance(outro, Medida):
             raise NotImplementedError("a exponenciação entre medidas não está implementada")
         else:
-            unidades = self.unidades_originais
-            if outro == int(outro):
-                unidades = simplifica_unidades(self.unidades_originais*outro)
+            unidades = simplifica_unidades(self.unidades_originais)
+            for i, u in enumerate(unidades):
+                unidades[i] = u.nova_unidade_por_expoente(outro)
+            unidades = simplifica_unidades(unidades)
             return Medida((self.nominal**outro, outro*self.nominal**(outro-1)*self.incerteza), unidades)
     def __abs__(self):
         m = Medida((abs(self.nominal), self.incerteza), self.unidades_originais)
