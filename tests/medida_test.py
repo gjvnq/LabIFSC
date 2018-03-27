@@ -58,6 +58,25 @@ def test_medida_add_3():
     assert m4.incerteza == 0.4280839895013123
     assert unidades_em_texto(m4.unidades_originais) == "ft"
 
+def test_medida_si_1():
+    m = Medida("1+-0.1", "ft").SI()
+
+    assert m.nominal - 0.3048 < 1E-4
+    assert m.incerteza - 0.03048 < 1E-4
+    assert unidades_em_texto(m.unidades_originais) == "m"
+
+def test_medida_si_2():
+    m = Medida("1+-0.1", "ft²").SI()
+
+    assert m.nominal - 0.092903 < 1E-4
+    assert m.incerteza - 0.0092903 < 1E-4
+    assert unidades_em_texto(m.unidades_originais) == "m²"
+
+def test_medida_si_3():
+    m = Medida("1+-0.1", "ft² deg lb h °F A mol^-1").SI()
+
+    assert unidades_em_texto(m.unidades_originais) == "m² rad kg s K A mol⁻¹"
+
 def test_medida_sub_1():
     m1 = Medida(1, "m")
     m2 = Medida(2, "m")

@@ -24,3 +24,6 @@ demo.py
 dist/
 build/
 sdist/
+
+.pytest_cache/
+LabIFSC.egg-info/

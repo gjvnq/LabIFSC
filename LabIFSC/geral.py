@@ -10,7 +10,7 @@ MAPA_DE_DIMENSOES = {
     "T": 3, # Tempo | Padrão: segundo
     "K": 4, # Temperatura | Padrão: kelvin
     "I": 5, # Corrente | Padrão: Ampère
-    "N": 6,  # "Quantidade" | Padrão: mol
+    "N": 6, # "Quantidade" | Padrão: mol
     0: "L",
     1: "A",
     2: "M",

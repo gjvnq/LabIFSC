@@ -1,9 +1,9 @@
 #!/usr/bin/env python
 
-from distutils.core import setup
+from setuptools import setup
 
 setup(name='LabIFSC',
-    version='0.1.4',
+    version='0.1.5',
     description='Uma biblioteca para automatizar tarefas ligadas às disciplinas de laboratório de física do IFSC-USP (Python 2 e Python 3)',
     author='Gabriel Queiroz',
     author_email='gabrieljvnq@gmail.com',

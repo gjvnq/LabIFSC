@@ -101,8 +101,14 @@ Os valores prefixados com ```si_``` estão em unidades do MKS, ou seja: metro, r
 
 ```python
 # Lembre-se que lb é o símbolo para libras/pounds
-M("1") #<1.0±0.0  = 1.0±0.0 ∅>
+M("1") # <1.0±0.0  = 1.0±0.0 ∅>
 M("1", "lb/kg") # <1.0±0.0 lb kg⁻¹ = 0.45359237±0.0 ∅>
+```
+
+Também é possível converter uma medida para sua equivalente no SI usando o método ```.SI()``` como no exemplo abaixo:
+
+```python
+M("1+-0.1", "ft").SI() # <0.3048±0.03048 m = 0.3048±0.03048 L1>
 ```
 
 ## Comparações

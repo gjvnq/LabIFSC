@@ -3,6 +3,7 @@
 # Referências: https://en.wikipedia.org/wiki/Conversion_of_units e http://physics.nist.gov/cuu/Constants/Table/allascii.txt
 
 import math
+from .geral import TODAS_AS_UNIDADES
 from .medida import Medida
 from .unidade import Unidade
 
@@ -80,7 +81,8 @@ def registra_unidades():
     Unidade("milésimo angular", "µ", "µ", "A1", Medida("0.981748(1)E-3"), Medida(0))
     Unidade("minuto de arco", "'", "'", "A1", Medida("0.290888(1)E-3"), Medida(0))
     Unidade("segundo de arco", "''", "''", "A1", Medida("4.848137(1)E-6"), Medida(0))
-    Unidade("grau", "°", "deg", "A1", Medida("17.453293(1)E-3"), Medida(0))
+    deg = Unidade("grau", "°", "deg", "A1", Medida("17.453293(1)E-3"), Medida(0))
+    TODAS_AS_UNIDADES["deg"] = deg
     Unidade("radiano", "rad", "rad", "A1", Medida(1), Medida(0))
 
     # Ângulos sólidos
@@ -172,3 +174,6 @@ def registra_unidades():
     Unidade("Kelvin", "K", "K", "K", Medida(1), Medida(0))
     Unidade("Celsius", "°C", "\degree{}C", "K", Medida(1), Medida(273.15), simbolo_siunitx="\\celsius")
     Unidade("Fahrenheit", "°F", "\degree{}F", "K", Medida(5/9), Medida(255.37222222222223))
+
+    # Quantidade
+    Unidade("mol", "mol", "mol", "N", Medida(6.022140857E23), Medida(0.000000074E23))
