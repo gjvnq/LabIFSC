@@ -41,12 +41,6 @@ def registra_unidades():
 
     # Área
     Unidade("hectare", "ha", "ha", "L2", Medida(1E4), Medida(0))
-    # Unidade("pé quadrado", "!ft²", "!ft^2", "L2", Medida(9.290304E-2), Medida(0))
-    Unidade("polegada quadrada", "in²", "in^2", "L2", Medida(6.4516E-4), Medida(0))
-    Unidade("quilômetro quadrado", "km²", "km^2", "L2", Medida(1E6), Medida(0))
-    Unidade("metro quadrado", "m²", "m^2", "L2", Medida(1), Medida(0))
-    Unidade("milha quadrada", "mi²", "mi^2", "L2", Medida(2.589988110336E6), Medida(0))
-    Unidade("jarda quadrada", "yd²", "yd^2", "L2", Medida(0.83612736), Medida(0))
 
     # Volume
     Unidade("barril imperial", "bl(imp)", "bl(imp)", "L3", Medida(0.16365924), Medida(0))

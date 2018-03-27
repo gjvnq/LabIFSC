@@ -194,8 +194,12 @@ PREFIXOS_SI_SIUNITX_REV = {
 PREFIXOS_SI = dict(list(PREFIXOS_SI_CURTOS.items()) + list(PREFIXOS_SI_LONGOS.items()))
 
 def gera_expoente(num):
-    txt = str(num)
-    txt = txt.replace("0", "⁰").replace("1", "¹").replace("2", "²").replace("3", "³").replace("4", "⁴").replace("5", "⁵").replace("6", "⁶").replace("7", "⁷").replace("8", "⁸").replace("9", "⁹").replace("+", "⁺").replace("-", "⁻").replace("i", "ⁱ")
+    txt = "?"
+    if num == int(num):
+        txt = str(int(num))
+    else:
+        txt = str(round(num, 2))
+    txt = txt.replace("0", "⁰").replace("1", "¹").replace("2", "²").replace("3", "³").replace("4", "⁴").replace("5", "⁵").replace("6", "⁶").replace("7", "⁷").replace("8", "⁸").replace("9", "⁹").replace("+", "⁺").replace("-", "⁻").replace("i", "ⁱ").replace(".", "⋅")
     return txt
 
 def analisa_numero(num):

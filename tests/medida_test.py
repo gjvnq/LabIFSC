@@ -134,3 +134,14 @@ def test_medida_divmod_1():
     assert m3.incerteza == 0.25
     assert unidades_em_texto(m3.unidades_originais) == "kg m⁻¹"
 
+def test_medida_pow_1():
+    m = Medida("4+/-0.1", "m^2")**0.5
+    assert m.nominal == 2
+    assert m.incerteza == 0.025
+    assert unidades_em_texto(m.unidades_originais) == "m"
+
+def test_medida_pow_2():
+    m = Medida("4+/-0.1", "m^2")**2
+    assert m.nominal == 16
+    assert m.incerteza == 0.8
+    assert unidades_em_texto(m.unidades_originais) == "m⁴"
