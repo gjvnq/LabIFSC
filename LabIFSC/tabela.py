@@ -67,7 +67,7 @@ def linearize(x, y, imprimir=False):
 
     da = dy/sqrt(sum(map(lambda x: (x-x_avg)**2, x)))
 
-    db = sqrt(sum(map(lambda x: x**2, x))/(len(x)*sum(map(lambda x: (x-x_avg)**2, x))))
+    db = sqrt(sum(map(lambda x: x**2, x))/(len(x)*sum(map(lambda x: (x-x_avg)**2, x)))) * dy
 
     if imprimir:
         print("a  = {}".format(a))
