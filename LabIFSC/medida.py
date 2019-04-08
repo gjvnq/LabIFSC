@@ -1,8 +1,8 @@
 #!/usr/bin/env python
 # -*- coding: utf-8 -*-
 
+import math
 from copy import copy
-from math import floor, log, ceil
 from .geral import TODAS_AS_UNIDADES, acha_unidade, calcula_dimensao, analisa_numero, dimensao_em_texto, fator_de_conversao_para_si, unidades_em_texto, converte_unidades, analisa_unidades, simplifica_unidades, gera_expoente, adimensional, get_unidades
 
 def M(val, incerteza = None, unidade = None):
@@ -163,7 +163,7 @@ class Medida:
     
     def __floordiv__(self, outro):
         m = self.__div__(outro)
-        nom = floor(m.nominal)
+        nom = math.floor(m.nominal)
         err = abs(m.nominal-nom) + m.incerteza
         return Medida((nom, err), m.unidades_originais)
     
@@ -185,15 +185,34 @@ class Medida:
         return Medida((q_nom, err), unidades), Medida((r_nom, err), unidades)
     
     def __pow__(self, outro):
-        if isinstance(outro, Medida):
-            raise NotImplementedError("a exponenciação entre medidas não está implementada")
-        else:
-            unidades = []
-            for u in self.unidades_originais:
-                unidades.append(u.nova_unidade_por_expoente(outro))
-            unidades = simplifica_unidades(unidades)
-            return Medida((self.nominal**outro, outro*self.nominal**(outro-1)*self.incerteza), unidades)
+        if not isinstance(outro, Medida):
+            return self.__pow__(Medida(outro))
     
+        if outro.dimensao != (0, 0, 0, 0, 0, 0, 0):
+            raise NotImplementedError("o expoente deve ser adimensional")
+
+        unidades = []
+        if outro.nominal == int(outro.nominal) or (1/outro.nominal) == int(1/outro.nominal):
+            for u in self.unidades_originais:
+                unidades.append(u.nova_unidade_por_expoente(outro.nominal))
+            unidades = simplifica_unidades(unidades)
+        else:
+            unidades = simplifica_unidades(self.unidades_originais)
+
+        A = self.nominal
+        B = outro.nominal
+        σA = self.incerteza
+        σB = outro.incerteza
+        σAB = σA*σB # Não tenho certeza se esse valor está certo
+
+        f = self.nominal ** outro.nominal
+        σf = 0
+        σf += ((B/A)*σA)**2
+        σf += (math.log(A)*σB)**2
+        σf += 2*B*math.log(A)*σAB/A
+        σf = math.fabs(f)*math.sqrt(σf)
+        return Medida((f, σf), unidades)
+
     def __abs__(self):
         m = Medida((abs(self.nominal), self.incerteza), self.unidades_originais)
         return m

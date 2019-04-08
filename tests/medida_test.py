@@ -157,3 +157,20 @@ def test_medida_pow_2():
     assert m.nominal == 16
     assert m.incerteza == 0.8
     assert unidades_em_texto(m.unidades_originais) == "m⁴"
+
+def test_medida_pow_3():
+    m1 = Medida("2+/-0.1", "m^2")
+    m2 = Medida("3+/-0.5", "")
+    m3 = m1**m2
+    assert m3.nominal == 2**3
+    assert m3.incerteza == 3.9725887222397813
+    assert unidades_em_texto(m3.unidades_originais) == "m⁶"
+
+
+def test_medida_pow_3():
+    m1 = Medida("2+/-0.1", "m^2")
+    m2 = Medida("3.1+/-0.5", "")
+    m3 = m1**m2
+    assert m3.nominal == 2**3.1
+    assert m3.incerteza == 4.300586108569011
+    assert unidades_em_texto(m3.unidades_originais) == "m²"

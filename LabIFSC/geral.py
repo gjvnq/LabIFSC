@@ -348,6 +348,10 @@ def analisa_unidades(txt):
     txt = txt.replace(" ", "*").replace("**", "*").replace("^", "")+"*Z0"
     if len(txt.split("/")) > 2:
         raise Exception("apenas uma barra (/) pode ser utilizada ao especificar uma unidade. Após a barra todos os expoentes são multiplicados por -1")
+
+    if txt == "*Z0":
+        return []
+
     mul_cte = 1 # Fator multiplicativo para os expoentes. Serve apenas para regular o sinal
     modo = 0 # 0-Nome da unidade; 1-Expoente da unidade
     num_char = list("+-0123456789")
