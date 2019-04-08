@@ -1,4 +1,7 @@
+[![Build Status](https://travis-ci.org/gjvnq/LabIFSC.svg?branch=master)](https://travis-ci.org/gjvnq/LabIFSC) ![PyPI - Python Version](https://img.shields.io/pypi/pyversions/LabIFSC.svg) ![PyPI - License](https://img.shields.io/pypi/l/LabIFSC.svg) ![PyPI - Version](https://img.shields.io/pypi/v/LabIFSC.svg)
+
 # LabIFSC
+
 Uma biblioteca para Python 2 e Python 3 para propagação de erro e conversão de unidades utilizando os métodos (um tanto insólitos) que os professores de lab de física do IFSC-USP insistem.
 
 # Sumário
