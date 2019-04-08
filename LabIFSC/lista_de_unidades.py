@@ -28,7 +28,7 @@ def registra_unidades():
     Unidade("line", "ln", "ln", "L1", Medida(0.0254/12), Medida(0))
     Unidade("metro", "m", "m", "L1", Medida(1), Medida(0))
     Unidade("mickey", "mickey", "mickey", "L1", Medida(1.27E-4), Medida(1))
-    Unidade("micron", "µ", "\mu", "L1", Medida(1.27E-4), Medida(0))
+    Unidade("micron", "µ", "\\mu", "L1", Medida(1.27E-4), Medida(0))
     Unidade("thou", "mil", "mil", "L1", Medida(2.54E-4), Medida(0))
     Unidade("milha internacional", "mi", "mi", "L1", Medida(1609.344), Medida(0))
     Unidade("légua nautica", "nl", "nl", "L1", Medida(5556), Medida(0))
@@ -159,15 +159,15 @@ def registra_unidades():
     Unidade("Volt", "V", "V", "ML2A-1T-3", Medida(1), Medida(0))
 
     # Resistência elétrica
-    Unidade("Ohm", "Ω", "\ohm", "M1L2A-2T-3", Medida(1), Medida(0))
+    Unidade("Ohm", "Ω", "\\ohm", "M1L2A-2T-3", Medida(1), Medida(0))
 
     # Capacitância
     Unidade("Farad", "F", "F", "A2T4M-1L-2", Medida(1), Medida(0))
 
     # Temperature
     Unidade("Kelvin", "K", "K", "K", Medida(1), Medida(0))
-    Unidade("Celsius", "°C", "\degree{}C", "K", Medida(1), Medida(273.15), simbolo_siunitx="\\celsius")
-    Unidade("Fahrenheit", "°F", "\degree{}F", "K", Medida(5/9), Medida(255.37222222222223))
+    Unidade("Celsius", "°C", "\\degree{}C", "K", Medida(1), Medida(273.15), simbolo_siunitx="\\celsius")
+    Unidade("Fahrenheit", "°F", "\\degree{}F", "K", Medida(5/9), Medida(255.37222222222223))
 
     # Quantidade
     Unidade("mol", "mol", "mol", "N", Medida(6.022140857E23), Medida(0.000000074E23))
