@@ -1,9 +1,7 @@
-language: python
-matrix:
-  include:
-    - python: 2.7
-    - python: 3.0
+language: generic
 install:
+  - pip2 install pytest
+  - pip install pytest
   - pip install tox
 script:
   - tox
