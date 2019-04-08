@@ -1,7 +1,8 @@
 language: generic
 install:
-  - pip2 install pytest
-  - pip install pytest
-  - pip install tox
+  - pip2 install pytest --user
+  - pip install pytest --user
+  - pip install tox --user
 script:
   - tox
+cache: pip
