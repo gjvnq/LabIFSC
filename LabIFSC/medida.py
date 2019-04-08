@@ -201,17 +201,18 @@ class Medida:
 
         A = self.nominal
         B = outro.nominal
-        σA = self.incerteza
-        σB = outro.incerteza
-        σAB = σA*σB # Não tenho certeza se esse valor está certo
+        # s = σ
+        sA = self.incerteza
+        sB = outro.incerteza
+        sAB = sA*sB # Não tenho certeza se esse valor está certo
 
         f = self.nominal ** outro.nominal
-        σf = 0
-        σf += ((B/A)*σA)**2
-        σf += (math.log(A)*σB)**2
-        σf += 2*B*math.log(A)*σAB/A
-        σf = math.fabs(f)*math.sqrt(σf)
-        return Medida((f, σf), unidades)
+        sf = 0
+        sf += ((B/A)*sA)**2
+        sf += (math.log(A)*sB)**2
+        sf += 2*B*math.log(A)*sAB/A
+        sf = math.fabs(f)*math.sqrt(sf)
+        return Medida((f, sf), unidades)
 
     def __abs__(self):
         m = Medida((abs(self.nominal), self.incerteza), self.unidades_originais)
