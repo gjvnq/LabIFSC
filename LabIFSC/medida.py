@@ -157,7 +157,7 @@ class Medida:
     def __div__(self, outro):
         outro = self._torne_medida(outro, False)
         nom = self.nominal / outro.nominal
-        err = ((self.nominal * outro.incerteza) + self.incerteza * outro.nominal)/outro.nominal**2
+        err = (self.nominal * outro.incerteza + self.incerteza * outro.nominal)/outro.nominal**2
         m = Medida((nom, err), simplifica_unidades(self.unidades_originais, outro.unidades_originais, inverte=True))
         return m
     
@@ -232,7 +232,11 @@ class Medida:
             outro**self.nominal * log(outro) * self.incerteza))
     
     def __rdiv__(self, outro):
+        print(">", outro, self)
         return Medida(outro).__div__(self)
+
+    def __rtruediv__(self, outro):
+        return Medida(outro).__truediv__(self)
 
     def __format__(self, fmt):
         fmt = fmt.split(",")

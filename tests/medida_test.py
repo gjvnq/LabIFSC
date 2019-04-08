@@ -117,6 +117,18 @@ def test_medida_div_1():
     assert m4.incerteza == 0
     assert unidades_em_texto(m4.unidades_originais) == "L Pa kg⁻¹"
 
+def test_medida_div_2():
+    m1 = Medida("5+-2", "kg")
+    m2 = 0.5
+    m3 = m1/m2
+    m4 = m2/m1
+    assert m3.nominal == 10.0
+    assert m3.incerteza == 4.0
+    assert unidades_em_texto(m3.unidades_originais) == "kg"
+    assert m4.nominal == 0.1
+    assert m4.incerteza == 0.04
+    assert unidades_em_texto(m4.unidades_originais) == "kg⁻¹"
+
 def test_medida_abs_1():
     m1 = Medida("-3+-1", "kg/m")
     m2 = abs(m1)
