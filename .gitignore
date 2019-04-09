@@ -1,3 +1,8 @@
+# Testing
+
+.coverage
+coverage.xml
+
 # Binaries for programs and plugins
 *.exe
 *.dll

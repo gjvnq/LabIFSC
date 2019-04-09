@@ -1,8 +1,9 @@
 language: generic
 install:
-  - pip2 install pytest --user
-  - pip install pytest --user
-  - pip install tox --user
+  - pip2 install pytest pytest-cov --user
+  - pip install tox pytest pytest-cov codecov --user
 script:
   - tox
 cache: pip
+after_success:
+  - codecov

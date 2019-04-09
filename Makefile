@@ -8,10 +8,10 @@ help:
 	@echo "- upload (to PyPI, only for developers)"
 
 install-dev-deps:
-	python3 -m pip install --user --upgrade twine wheel tox
+	python3 -m pip install --user --upgrade twine wheel tox pytest-cov
 
 test:
-	tox
+	python3 -m tox
 
 dist:
 	python3 setup.py sdist bdist_wheel
