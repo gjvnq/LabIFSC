@@ -1,4 +1,4 @@
-[![Build Status](https://travis-ci.org/gjvnq/LabIFSC.svg?branch=master)](https://travis-ci.org/gjvnq/LabIFSC) [![PyPI - Python Version](https://img.shields.io/pypi/pyversions/LabIFSC.svg)](https://www.python.org) [![GitHub - License](https://img.shields.io/github/license/gjvnq/LabIFSC.svg)](https://github.com/gjvnq/LabIFSC/blob/master/LICENSE) [![PyPI - Version](https://img.shields.io/pypi/v/LabIFSC.svg)](https://pypi.org/project/LabIFSC)
+[![Build Status](https://travis-ci.org/gjvnq/LabIFSC.svg?branch=master)](https://travis-ci.org/gjvnq/LabIFSC) [![Codecov](https://img.shields.io/codecov/c/github/gjvnq/LabIFSC.svg)](https://codecov.io/gh/gjvnq/LabIFSC) [![PyPI - Python Version](https://img.shields.io/pypi/pyversions/LabIFSC.svg)](https://www.python.org) [![GitHub - License](https://img.shields.io/github/license/gjvnq/LabIFSC.svg)](https://github.com/gjvnq/LabIFSC/blob/master/LICENSE) [![PyPI - Version](https://img.shields.io/pypi/v/LabIFSC.svg)](https://pypi.org/project/LabIFSC)
 
 # LabIFSC
 
