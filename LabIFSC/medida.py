@@ -209,9 +209,9 @@ class Medida:
         f = self.nominal ** outro.nominal
         sf = 0
         sf += ((B/A)*sA)**2
-        sf += (math.log(A)*sB)**2
-        sf += 2*B*math.log(A)*sAB/A
-        sf = math.fabs(f)*math.sqrt(sf)
+        sf += (math.log(math.fabs(A))*sB)**2
+        sf += 2*B*math.log(math.fabs(A))*sAB/A
+        sf = math.fabs(f)*math.sqrt(math.fabs(sf))
         return Medida((f, sf), unidades)
 
     def __abs__(self):
