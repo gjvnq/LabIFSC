@@ -11,7 +11,7 @@ def registra_unidades():
     PI = Medida("3.14159(1)")
 
     # Comprimento
-    Unidade("Ångstrom", "Å", "Å", "L1", Medida(1E-9), Medida(0))
+    Unidade("Ångstrom", "Å", "Å", "L1", Medida(1E-10), Medida(0))
     Unidade("unidade astronômica", "AU", "AU", "L1", Medida(149597870700), Medida(0))
     Unidade("raio de Bohr do hidrogênio", "a0", "a_0", "L1", Medida("5.2917721092(17)×10^−11"), Medida(0))
     Unidade("côvado", "côv", "côv", "L1", Medida("0.52635(285)"), Medida(0))
