@@ -156,13 +156,13 @@ def registra_unidades():
     Unidade("Coulomb metro", "C·m", "C\\cdot{}m", "I1T2L1", Medida(1), Medida(0))
 
     # Potencial elétrico
-    Unidade("Volt", "V", "V", "ML2A-1T-3", Medida(1), Medida(0))
+    Unidade("Volt", "V", "V", "ML2I-1T-3", Medida(1), Medida(0))
 
     # Resistência elétrica
-    Unidade("Ohm", "Ω", "\\ohm", "M1L2A-2T-3", Medida(1), Medida(0))
+    Unidade("Ohm", "Ω", "\\ohm", "M1L2I-2T-3", Medida(1), Medida(0))
 
     # Capacitância
-    Unidade("Farad", "F", "F", "A2T4M-1L-2", Medida(1), Medida(0))
+    Unidade("Farad", "F", "F", "I2T4M-1L-2", Medida(1), Medida(0))
 
     # Temperature
     Unidade("Kelvin", "K", "K", "K", Medida(1), Medida(0))

@@ -532,7 +532,7 @@ def unidades_em_texto(unidades, sep=" ", estilo=""):
         elif estilo == "siunitx":
             if per == False and unidade.expoente_pai < 0:
                 per = True
-                txt += "\per"
+                txt += "\\per"
             txt += unidade.simbolo_siunitx
         else:
             txt += unidade.simbolo

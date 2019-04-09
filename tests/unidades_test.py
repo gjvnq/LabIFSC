@@ -25,3 +25,14 @@ def test_unidade_3():
     m2 = Medida(1, "ft")
     assert m1 != m2
     assert not m1 == m2
+    assert m1.unidade() == "m"
+    assert m2.unidade() == "ft"
+    assert m2.SI().unidade() == "m"
+
+def test_unidade_4():
+    m1 = Medida(1, "C V")
+    m2 = Medida(1, "J")
+    assert m1 == m2
+    assert not m1 != m2
+    assert m1.unidade().__str__() == "C V"
+    assert m1.SI().unidade().__str__() == "J"

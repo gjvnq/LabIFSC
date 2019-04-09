@@ -5,21 +5,8 @@ import math
 from copy import copy
 from .geral import TODAS_AS_UNIDADES, acha_unidade, calcula_dimensao, analisa_numero, dimensao_em_texto, fator_de_conversao_para_si, unidades_em_texto, converte_unidades, analisa_unidades, simplifica_unidades, gera_expoente, adimensional, get_unidades
 
-def M(val, incerteza = None, unidade = None):
-    # Talvez seja uma lista de números para converter
-    if isinstance(val, list):
-        ret = []
-        for x in val:
-            try:
-                ret.append(Medida((x, incerteza), unidade=unidade))
-            except:
-                ret.append(Medida(x, unidade=unidade))
-        return ret
-    # Tente o de sempre
-    try:
-        return Medida((val, incerteza), unidade=unidade)
-    except:
-        return Medida(val, unidade=unidade)
+def M(*args, **kwargs):
+   return Medida(*args, **kwargs)
 
 class Medida:
     unidades_originais = [] # Tuplas (objeto unidade, expoente) na ordem em que foram entradas  
@@ -71,6 +58,16 @@ class Medida:
         # Gere as unidades
         global TODAS_AS_UNIDADES
         m.unidades_originais = []
+
+        # Casos especiais
+        casos_especiais = ["joule", "newton", "pascal", "watt", "coulomb", "ohm", "farad"]
+        for caso_especial in casos_especiais:
+            u = TODAS_AS_UNIDADES[caso_especial]
+            if self.dimensao == u.dimensao:
+                m.unidades_originais.append(u)
+                return m
+
+        # Caso padrão
         if self.dimensao[0] != 0:
             m.unidades_originais.append(TODAS_AS_UNIDADES['metro'].nova_unidade_por_expoente(self.dimensao[0]))
         if self.dimensao[1] != 0:
@@ -87,6 +84,9 @@ class Medida:
             m.unidades_originais.append(TODAS_AS_UNIDADES['mol'].nova_unidade_por_expoente(self.dimensao[6]))
 
         return m
+
+    def unidade(self, separador=" ", estilo=""):
+        return unidades_em_texto(self.unidades_originais, separador, estilo)
 
     def checa_dim(self, outro):
         # Aplique a regra
@@ -327,7 +327,7 @@ class Medida:
         if modo == "latex":
             uni = unidades_em_texto(self.unidades_originais, estilo="latex")
             base = "{nom}\\pm{err}\\textrm{{ {uni}}}"
-            base_exp = "({nom}\\pm{err})\cdot10^{{{expn}}}\\textrm{{ {uni}}}"
+            base_exp = "({nom}\\pm{err})\\cdot10^{{{expn}}}\\textrm{{ {uni}}}"
         elif modo == "siunitx":
             uni = unidades_em_texto(self.unidades_originais, estilo="siunitx")
             base = "\\SI{{{nom}+-{err}}}{{{uni}}}"
