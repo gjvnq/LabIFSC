@@ -2,7 +2,8 @@
 # -*- coding: utf-8 -*-
 
 import pytest
-from LabIFSC import Medida, unidades_em_texto
+from math import fabs
+from LabIFSC import M, Medida, unidades_em_texto
 
 def test_medida_eq_1():
     m1 = Medida((0.0, 0.0))
@@ -181,3 +182,29 @@ def test_medida_pow_5():
     assert m3.nominal == (-2)**-3
     assert m3.incerteza == 0.06207169878499658
     assert unidades_em_texto(m3.unidades_originais) == "m⁻⁶"
+
+def test_medida_array_1():
+    m = M([1,2,3,4,5], incerteza=0.5, unidade="ft")
+    assert len(m) == 5
+    for i in range(len(m)):
+        assert m[i].nominal == i + 1
+        assert m[i].incerteza == 0.5
+        assert m[i].si_nominal == 0.3048*(i + 1)
+        assert m[i].si_incerteza == 0.1524
+
+def test_medida_array_2():
+    m = Medida("100+-10", "libra")
+    l = M([1,2,m,4,5], incerteza=0.5, unidade="ft")
+    print(l)
+    assert len(l) == 5
+    for i in range(len(l)):
+        if i == 2:
+            continue
+        assert l[i].nominal == i + 1
+        assert l[i].incerteza == 0.5
+        assert l[i].si_nominal == 0.3048*(i + 1)
+        assert l[i].si_incerteza == 0.1524
+    assert l[2].nominal == 100
+    assert l[2].incerteza == 10
+    assert fabs(l[2].si_nominal - 45.359237) < 0.001
+    assert fabs(l[2].si_incerteza - 4.5359237) < 0.001

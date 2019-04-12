@@ -5,8 +5,24 @@ import math
 from copy import copy
 from .geral import TODAS_AS_UNIDADES, acha_unidade, calcula_dimensao, analisa_numero, dimensao_em_texto, fator_de_conversao_para_si, unidades_em_texto, converte_unidades, analisa_unidades, simplifica_unidades, gera_expoente, adimensional, get_unidades
 
+import sys
+PY3 = sys.version_info[0] == 3
+if PY3:
+    string_types = str
+else:
+    string_types = basestring
+
 def M(*args, **kwargs):
-   return Medida(*args, **kwargs)
+    if len(args) > 0 and isinstance(args[0], list):
+        ans = []
+        for m in args[0]:
+            if isinstance(m, Medida):
+                ans.append(m)
+            else:
+                ans.append(Medida(m, **kwargs))
+        return ans
+    else:
+        return Medida(*args, **kwargs)
 
 class Medida:
     unidades_originais = [] # Tuplas (objeto unidade, expoente) na ordem em que foram entradas  
@@ -16,8 +32,14 @@ class Medida:
     si_nominal = 0.0
     si_incerteza = 0.0
 
-    def __init__(self, valor, unidade=None):
-        self.inicializa(valor, unidade_txt=unidade)
+    def __init__(self, valor, unidade=None, incerteza=None):
+        if isinstance(valor, list):
+            raise ValueError("use M([...]) para gerar medidas a partir de listas de números")
+
+        if incerteza != None:
+            self.inicializa((valor, incerteza), unidade_txt=unidade)
+        else:
+            self.inicializa(valor, unidade_txt=unidade)
 
     def inicializa(self, valor, unidade_txt=None):
         # Analise o valor
