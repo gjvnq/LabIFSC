@@ -22,9 +22,12 @@ Uma biblioteca para Python 2 e Python 3 para propagação de erro e conversão d
 
 Em um terminal, basta executar um dos seguintes comandos para instalar ou atualizar a LibIFSC:
 
-```pip2 install -U LabIFSC --user``` (para quem usa Python 2)
+```pip2 install -U LabIFSC --user --upgrade``` (para quem usa Python 2)
 
-```pip3 install -U LabIFSC --user``` (para quem usa Python 3)
+```pip3 install -U LabIFSC --user --upgrade``` (para quem usa Python 3)
+
+```pip install -U LabIFSC --user --upgrade``` (para quem não sabe qual versão do Python está usando)
+
 
 ## Manualmente
 
